@@ -26,6 +26,8 @@ export interface BoardOptions {
     binaryStyle?: "native";
     /** Optional fade of actual binary text via CSS Highlights; full opacity without that API. */
     binaryOpacity?: number;
+    /** Native highlight color for mutated digits; defaults to the game accent. */
+    binaryColor?: string;
     targetEffects?: "liquid" | "fade";
 }
 export interface RuntimeOptions extends BoardOptions {
@@ -115,6 +117,8 @@ export interface BoardTarget {
     visible: boolean;
 }
 export interface Board {
+    /** Attach owned presentation to a real element; removed automatically on Recall. */
+    attach?(element: Element): ShadowRoot | null;
     readonly targets: readonly BoardTarget[];
     readonly glyphs: readonly Glyph[];
     readonly stats: BoardStats;

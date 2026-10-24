@@ -10,10 +10,10 @@
   "icon": "tank",
   "versionNote": "Breach. Build. Hold the page.",
   "controls": [
-    "WASD / arrows — drive; mouse — aim the turret",
-    "Click / Space — fire; keyboard-only aiming follows the hull",
-    "B — cover (2 scrap) · T — pillbox (8) · M — mine (3)",
-    "P — pause · G — next hostile base · Esc — Recall"
+    "WASD / arrows \u2014 drive; mouse \u2014 aim the turret",
+    "Click / Space \u2014 fire; keyboard-only aiming follows the hull",
+    "B \u2014 cover (2 scrap) \u00b7 T \u2014 pillbox (8) \u00b7 M \u2014 mine (3)",
+    "P \u2014 pause \u00b7 G \u2014 next hostile base \u00b7 Esc \u2014 Recall"
   ],
   "facts": [
     {
@@ -63,7 +63,7 @@
   ],
   "code": "const game = createShermanBytes({\n  root: \"main\",\n  textSelector: \"h1, h2, p\",\n  targetSelector: \"button, [data-base]\",\n  wallSelector: \"[data-sherman-wall]\",\n  binaryOpacity: 0.32,\n  mode: \"siege\", // or \"conquest\"\n  fortifications: true,\n});\ngame.start();\n// Later: game.destroy();",
   "importLine": "import { createShermanBytes } from \"@coded-design/sherman-bytes\";",
-  "engine": "Shared TypeScript runtime · original single-player tank simulation",
+  "engine": "Shared TypeScript runtime \u00b7 original single-player tank simulation",
   "extra": "Shells write literal 0/1 into the existing Text nodes. Optional binaryOpacity styles the real digits using CSS Highlights; without that API they stay fully visible. No replacement letters on canvas, cloned HTML, or per-letter spans. Recall restores still-owned text and button styles.",
   "sourcePaths": [
     "src/simulation.ts",
@@ -86,14 +86,14 @@
       "name": "Scout tank",
       "role": "35 armor",
       "rules": "A lighter enemy that flanks and fires at you. Destroy it for points and two scrap.",
-      "color": "#fa9361"
+      "color": "#ff343b"
     },
     {
       "icon": "tank",
       "name": "Heavy tank",
       "role": "70 armor",
       "rules": "Joins siege waves from wave 2. Takes more damage to destroy and drops four scrap. Keep cover between you and incoming shells.",
-      "color": "#f36979"
+      "color": "#ff168f"
     },
     {
       "icon": "engineer",
@@ -101,6 +101,28 @@
       "role": "Builder",
       "rules": "B builds cover, T builds a pillbox, M plants a mine. Spend scrap and leave space in front of your tank for construction.",
       "color": ""
+    }
+  ],
+  "palette": [
+    {
+      "label": "Tank / bits",
+      "color": "#65ff00"
+    },
+    {
+      "label": "Enemy",
+      "color": "#ff343b"
+    },
+    {
+      "label": "Heavy",
+      "color": "#ff168f"
+    },
+    {
+      "label": "Shell",
+      "color": "#00e5ff"
+    },
+    {
+      "label": "Power",
+      "color": "#ffea00"
     }
   ]
 }

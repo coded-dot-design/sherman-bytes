@@ -1,5 +1,10 @@
 # 0.3.1
 
+## 0.4.2
+
+- Native base walls, capture labels and cover outlines follow their real elements. Brighter tank graphics, green binary highlights and corrected keyboard ownership.
+- Native element-owned fortifications add about 1.2 kB gzip; the distribution ceiling is now 24 kB (the complete ESM and React builds measure about 23 kB).
+
 ## 0.4.1
 
 - Reversible mobile pinch/double-tap zoom lock while playing; native scrolling remains available. Pause and Recall restore the host policy. Set `lockZoom: false` to opt out.

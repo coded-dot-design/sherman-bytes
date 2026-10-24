@@ -1,3 +1,4 @@
+import { BasePresentation } from './base-presentation.js';
 import {
   EntityPool,
   segmentHit,
@@ -169,6 +170,7 @@ export function createGame(
     ended = false,
     relocate = false;
   let renderer: ReturnType<typeof tankSprites> | undefined;
+  const basePresentation = new BasePresentation(api);
   const point: Point = { x: 0, y: 0 };
   const previous: Point = { x: 0, y: 0 };
   const next: Point = { x: 0, y: 0 };
@@ -770,7 +772,7 @@ export function createGame(
     ctx.save();
     ctx.lineWidth = 1;
     for (const item of structures) {
-      if (!active(item)) continue;
+      if (item.base || !active(item)) continue;
       const r = item.rect;
       if (
         r.right < 0 ||
@@ -780,8 +782,8 @@ export function createGame(
       )
         continue;
       const c = center(r),
-        color = item.base ? "#f1aa69" : COLORS.captured;
-      ctx.fillStyle = item.base ? "#493529" : "#243b34";
+        color = COLORS.captured;
+      ctx.fillStyle = "#241a35";
       ctx.strokeStyle = color;
       if (item.kind === "mine") {
         ctx.fillRect(c.x - 6, c.y - 4, 12, 8);
@@ -836,9 +838,9 @@ export function createGame(
       ctx.setLineDash([]);
       const x = job.from.x + (c.x - job.from.x) * t,
         y = job.from.y + (c.y - job.from.y) * t;
-      ctx.fillStyle = "#ffd783";
+      ctx.fillStyle = "#00e5ff";
       ctx.fillRect(x - 3, y - 5, 6, 4);
-      ctx.fillStyle = "#a9c1d1";
+      ctx.fillStyle = "#ff168f";
       ctx.fillRect(x - 4, y - 1, 8, 6);
       ctx.fillRect(x - 4, y + 5, 3, 4);
       ctx.fillRect(x + 1, y + 5, 3, 4);
@@ -1031,41 +1033,7 @@ export function createGame(
     renderer ??= tankSprites(api.options.document ?? globalThis.document);
     ctx.save();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "#f9bf62";
-    for (const wall of terrain.walls) {
-      ctx.setLineDash([4, 4]);
-      ctx.strokeRect(
-        wall.left - 2,
-        wall.top - 2,
-        wall.width + 4,
-        wall.height + 4,
-      );
-    }
-    ctx.setLineDash([]);
-    for (const base of bases.values()) {
-      const r = base.target.rect;
-      if (!base.target.visible || !r) continue;
-      const c = center(r);
-      if (base.captured || base.target.health <= 0) {
-        ctx.strokeStyle = base.captured ? COLORS.captured : COLORS.shell;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(r.left - 4, r.top - 4, r.width + 8, r.height + 8);
-        ctx.fillStyle = ctx.strokeStyle;
-        ctx.font = "bold 10px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(
-          base.captured ? "FRIENDLY / REPAIR" : "DRIVE ONTO BASE",
-          c.x,
-          r.top - 9,
-        );
-        if (!base.captured)
-          ctx.fillRect(r.left, r.bottom + 5, (r.width * base.capture) / 0.7, 3);
-        else {
-          ctx.fillRect(c.x - 2, r.bottom + 5, 4, 10);
-          ctx.fillRect(c.x - 5, r.bottom + 8, 10, 4);
-        }
-      }
-    }
+    basePresentation.update(bases.values());
     for (const shell of shells) {
       ctx.fillStyle = shell.friendly ? COLORS.shell : COLORS.enemy;
       ctx.fillRect(Math.round(shell.x) - 3, Math.round(shell.y) - 3, 6, 6);
