@@ -1,0 +1,70 @@
+{
+  "id": "sherman-bytes",
+  "author": "Chris Cooley",
+  "license": "MIT",
+  "name": "Sherman Bytes",
+  "kind": "DOM TANK TACTICS",
+  "tagline": "Every page is a battlefield.",
+  "description": "Deploy an M4-inspired pixel tank onto a live webpage. Blast routes through text, disable button bases, capture their ground, and turn their defenses against the enemy.",
+  "accent": "amber",
+  "icon": "tank",
+  "versionNote": "Breach. Capture. Repair. Advance.",
+  "controls": [
+    "WASD / arrows \u2014 drive; mouse \u2014 aim the turret",
+    "Click / Space \u2014 fire; keyboard-only aiming follows the hull",
+    "P \u2014 pause \u00b7 G \u2014 next hostile base \u00b7 Esc \u2014 Recall"
+  ],
+  "facts": [
+    {
+      "value": "18",
+      "label": "enemy tank cap"
+    },
+    {
+      "value": "80",
+      "label": "pooled shells"
+    },
+    {
+      "value": "3",
+      "label": "cannon tiers"
+    }
+  ],
+  "loop": [
+    "Breach the text",
+    "Disable a button base",
+    "Drive onto it to capture",
+    "Repair, defend, advance"
+  ],
+  "chapters": [
+    {
+      "title": "The terrain is the typography.",
+      "body": "Letters block tanks and shells. A direct hit clears nearby glyphs into faint binary rubble, opening a crater wider than your tank. Whitespace becomes a route between positions. Explicit data-sherman-wall elements are solid cover: both tank movement and shell rays respect their cached rectangles."
+    },
+    {
+      "title": "Capture the button. Change the battle.",
+      "body": "Enemy tanks emerge beside live button bases. Shells drain the familiar liquid health effect. Once disabled, a base stops spawning; drive onto it for 0.7 seconds to capture it. Friendly bases repair 18 armor per second while you occupy them and automatically fire at nearby enemies. Capture every base and clear the surviving tanks to win."
+    },
+    {
+      "title": "Original pixel armor. Shared foundations.",
+      "body": "The M4-inspired silhouette has two cached tread frames and a separately rotating turret. Recoil, impact flashes, crosshairs, and debris use canvas. The runtime and DOM board come from a versioned engine snapshot. No sprite image downloads, game framework, or per-enemy DOM nodes."
+    },
+    {
+      "title": "Craters that you can drive through.",
+      "body": "Tank motion is checked in steps of at most four pixels, with axis sliding around corners. Shells use a swept collision segment; the first wall, glyph, tank, or live base wins. The board spatial grid supplies nearby glyphs without layout reads in the projectile loop. Hard cover has a separate four-Hz geometry cache capped at 32 elements."
+    },
+    {
+      "title": "A Bolo-inspired first expedition.",
+      "body": "Terrain, captured defensive positions, and resupply are the starting inspiration from Stuart Cheshire\u2019s Bolo. This version is original single-player gameplay and original art. Enemy scouts and heavier tanks pressure your route; cannon upgrades unlock at 20 and 60 XP. Networking, mines, and construction are future work, not features of this release."
+    }
+  ],
+  "code": "const game = createShermanBytes({\n  root: \"main\",\n  textSelector: \"h1, h2, p\",\n  targetSelector: \"button, [data-base]\",\n  wallSelector: \"[data-sherman-wall]\",\n  binaryOpacity: 0.32,\n});\ngame.start();\n// Later: game.destroy();",
+  "importLine": "import { createShermanBytes } from \"@coded-design/sherman-bytes\";",
+  "engine": "Shared TypeScript runtime \u00b7 original single-player tank simulation",
+  "extra": "Visual binary opacity is 0.32 by default and preserves original text nodes. Explicit direct-text mode writes literal binary and does not fade individual glyphs. No mutation of page structure, cloned HTML, or copied Bolo assets. Recall removes owned effects and restores eligible button styles.",
+  "sourcePaths": [
+    "src/simulation.ts",
+    "src/terrain.ts",
+    "src/sprites.ts",
+    "src/rules.ts",
+    "shared/ORIGIN.json"
+  ]
+}
