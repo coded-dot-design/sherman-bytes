@@ -782,8 +782,8 @@ export function createGame(
       )
         continue;
       const c = center(r),
-        color = item.base ? "#ff343b" : COLORS.captured;
-      ctx.fillStyle = item.base ? "#493529" : "#243b34";
+        color = COLORS.captured;
+      ctx.fillStyle = "#241a35";
       ctx.strokeStyle = color;
       if (item.kind === "mine") {
         ctx.fillRect(c.x - 6, c.y - 4, 12, 8);

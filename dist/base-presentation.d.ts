@@ -1,5 +1,5 @@
-import type { BoardTarget, GameContext } from './core/index.js';
-import type { Structure } from './fortifications.js';
+import type { BoardTarget, GameContext } from "./core/index.js";
+import type { Structure } from "./fortifications.js";
 interface BaseView {
     target: BoardTarget;
     captured: boolean;
