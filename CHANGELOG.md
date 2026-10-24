@@ -1,5 +1,9 @@
 # 0.3.1
 
+## 0.4.2
+
+- Native base walls, capture labels and cover outlines follow their real elements. Brighter tank graphics, green binary highlights and corrected keyboard ownership.
+
 ## 0.4.1
 
 - Reversible mobile pinch/double-tap zoom lock while playing; native scrolling remains available. Pause and Recall restore the host policy. Set `lockZoom: false` to opt out.

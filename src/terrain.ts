@@ -15,6 +15,7 @@ export function createTerrain(api: GameContext, options: TerrainOptions) {
     "form,input,textarea,select,[contenteditable],[data-virus-ignore],[data-dom-virus-root],[data-swarm-ui]";
   let nextRead = -Infinity;
   let walls: Rect[] = [];
+  const decorations = new Map<Element, HTMLElement>();
   return {
     get walls(): readonly Rect[] {
       return walls;
@@ -23,6 +24,7 @@ export function createTerrain(api: GameContext, options: TerrainOptions) {
       if (!force && now < nextRead) return;
       nextRead = now + 0.25;
       walls = [];
+      const seen = new Set<Element>();
       for (const element of [...(root?.querySelectorAll(selector) ?? [])].slice(
         0,
         32,
@@ -33,6 +35,16 @@ export function createTerrain(api: GameContext, options: TerrainOptions) {
             element.closest(api.options.excludeSelector))
         )
           continue;
+        seen.add(element);
+        if (!decorations.has(element)) {
+          const host = api.board.attach?.(element);
+          if (host) {
+            const marker = doc.createElement('i');
+            marker.setAttribute('data-sherman-cover', '');
+            marker.style.cssText = 'position:absolute;inset:-2px;border:1px dashed #00e5ff;pointer-events:none;border-radius:inherit';
+            host.append(marker); decorations.set(element, marker);
+          }
+        }
         const r = element.getBoundingClientRect();
         if (
           r.width <= 0 ||
@@ -59,6 +71,7 @@ export function createTerrain(api: GameContext, options: TerrainOptions) {
           height: r.height,
         });
       }
+      for (const [element, marker] of decorations) if (!seen.has(element) || !element.isConnected) { marker.remove(); decorations.delete(element); }
     },
     invalidate() {
       nextRead = -Infinity;

@@ -4,11 +4,11 @@ export const MAX_SHELLS = 120;
 export const TANK_RADIUS = 10;
 export const BASE_HEALTH = 100;
 export const COLORS = {
-  player: "#b9ed70",
-  enemy: "#fa9361",
-  heavy: "#f36979",
-  shell: "#ffd783",
-  captured: "#75e6b0",
+  player: "#65ff00",
+  enemy: "#ff343b",
+  heavy: "#ff168f",
+  shell: "#00e5ff",
+  captured: "#65ff00",
 };
 export const cannonTier = (xp: number) => (xp >= 60 ? 3 : xp >= 20 ? 2 : 1);
 export const cannonName = (tier: number) =>
