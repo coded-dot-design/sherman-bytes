@@ -2,6 +2,7 @@
 import GameSection from './GameSection.astro';
 import Architecture from './Architecture.astro';
 import Icon from './AbstractIcon.astro';
+import brandIcon from '../assets/dom-virus-icon.svg?raw';
 import '../style.css';
 const {data}=Astro.props;
 const hub=data.id==='dom-virus';
@@ -15,7 +16,7 @@ const kb=(n)=>(n/1000).toFixed(1);
   <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content={`${title} by Chris Cooley / coded.design. Tiny, open-source arcade games that turn your actual webpage into the game board.`}/>
   <meta name="theme-color" content="#101212"/><title>{title} — The DOM is the game board.</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23101212'/%3E%3Cpath d='M7 7h12v5h6v8h-6v5H7z' fill='%2377edaa'/%3E%3Cpath d='M12 12h7v8h-7z' fill='%23101212'/%3E%3C/svg%3E"/>
+  <link rel="icon" type="image/svg+xml" href={`data:image/svg+xml,${encodeURIComponent(brandIcon)}`}/>
   <script is:inline>
     (()=>{let preference='system';try{preference=localStorage.getItem('dom-virus:theme')||'system'}catch{}if(!['system','dark','light'].includes(preference))preference='system';document.documentElement.dataset.preference=preference;document.documentElement.dataset.theme=preference==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):preference})()
   </script>
@@ -23,7 +24,7 @@ const kb=(n)=>(n/1000).toFixed(1);
 <body>
   <a class="skip" href="#board" data-virus-ignore data-swarm-ignore>Skip to games</a>
   <header class="site-header" data-virus-ignore data-swarm-ignore>
-    <a class="brand" href={hub?'#top':'https://coded-dot-design.github.io/dom-virus/'} aria-label="DOM VIRUS home"><span class="brand-mark">d<span>v</span></span><span>DOM VIRUS<small>by coded.design</small></span></a>
+    <a class="brand" href={hub?'#top':'https://coded-dot-design.github.io/dom-virus/'} aria-label="DOM VIRUS home"><span class="brand-mark" aria-hidden="true"><Fragment set:html={brandIcon}/></span><span>DOM VIRUS<small>by coded.design</small></span></a>
     <nav aria-label="Main navigation"><a href="#games">Games <span>{data.games.length.toString().padStart(2,'0')}</span></a><a href="#engineering">Under the hood</a><a href={`${repo}#readme`}>GitHub ↗</a></nav>
     <div class="theme-switch" role="group" aria-label="Color theme"><button data-theme-choice="system" aria-label="Use system theme" title="System theme">Auto</button><button data-theme-choice="light" aria-label="Use light theme" title="Light theme"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button><button data-theme-choice="dark" aria-label="Use dark theme" title="Dark theme"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.3A9 9 0 0 1 9.7 3.5a9 9 0 1 0 10.8 10.8Z"/></svg></button></div>
   </header>
@@ -48,7 +49,7 @@ const kb=(n)=>(n/1000).toFixed(1);
     </section>
     <section class="embed-section" id="embed"><div class="section-heading"><span class="eyebrow"><span class="index">DEV</span> BRING YOUR OWN PLAYGROUND</span><span class="version">MIT LICENSED</span></div><h2>Your page is next.</h2><p class="embed-lead">Import a game, choose the targets, and start a session. The launcher is optional. React adapters are separate exports so plain JavaScript consumers do not pay for React.</p>{data.games.map(game=><article class={`embed-game accent-${game.accent}`}><div><h3>{game.name}</h3><p>{game.engine}</p><a href={`https://github.com/coded-dot-design/${game.id}#readme`} class="text-link" data-virus-ignore data-swarm-ignore>Install + integration guide ↗</a></div><div class="code-example" data-virus-ignore data-swarm-ignore><div class="code-heading"><span>JAVASCRIPT / ESM</span><button data-copy aria-label={`Copy ${game.name} integration code`}>Copy code</button></div><pre><code>{game.importLine+'\n\n'+game.code}</code></pre></div></article>)}<p class="install-note">Package names show the import after installation. Use each repository’s README for its available install or release route; registry publication is separate from this demo. Start with a static content container and exclude application controls you want to preserve.</p></section>
   </main>
-  <footer class="site-footer" data-virus-ignore data-swarm-ignore><a class="brand" href="#top"><span class="brand-mark">d<span>v</span></span><span>DOM VIRUS<small>The DOM is the game board.</small></span></a><div>Created by <strong>Chris Cooley</strong><br/><a href="https://coded.design">coded.design ↗</a> · Open source, MIT</div><a href={repo}>Fork it. Break a page. ↗</a></footer>
+  <footer class="site-footer" data-virus-ignore data-swarm-ignore><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><Fragment set:html={brandIcon}/></span><span>DOM VIRUS<small>The DOM is the game board.</small></span></a><div>Created by <strong>Chris Cooley</strong><br/><a href="https://coded.design">coded.design ↗</a> · Open source, MIT</div><a href={repo}>Fork it. Break a page. ↗</a></footer>
   <div class="session-bar" hidden data-virus-ignore data-swarm-ignore><span class="led"></span><strong id="session-name"></strong><span id="session-state">Loading…</span><button id="session-pause">Pause</button><button id="session-recall">Recall <kbd>Esc</kbd></button></div>
   <div id="site-status" class="site-status" role="status" aria-live="polite" data-virus-ignore data-swarm-ignore></div>
 
