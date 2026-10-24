@@ -1,3 +1,8 @@
+# 0.3.1
+
+- Adopt engine 0.8.0: native target-attached beacons, quieter mobile fills, fewer board rescans and one reusable collision measurement Range.
+- Preserve real text mutation and conditional Recall; pause/cancel native effects with the game lifecycle.
+
 # 0.3.0
 
 - Replace actual DOM text with literal 0/1 on every consumed letter; remove visual-only canvas substitution. Byte Runner leaves binary instead of erased spaces.

@@ -8,11 +8,17 @@ export declare function liquidFill(fill: number, color: string, energy?: number,
 export declare class TargetEffects {
     private readonly surfaces;
     private time;
+    private running;
+    private readonly quiet;
     private readonly win;
     constructor(win: Window);
     hit(target: BoardTarget, impact?: Point): void;
     private surface;
-    draw(ctx: CanvasRenderingContext2D, targets: readonly BoardTarget[], time: number, reduced: boolean): void;
+    draw(_ctx: CanvasRenderingContext2D, targets: readonly BoardTarget[], time: number, reduced: boolean): void;
+    private motion;
+    setActive(active: boolean): void;
+    ownsStyleMutation(target: BoardTarget): boolean;
+    private release;
     sync(targets: readonly BoardTarget[]): void;
     destroy(): void;
 }
