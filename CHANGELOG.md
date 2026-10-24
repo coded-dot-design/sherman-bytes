@@ -1,5 +1,9 @@
 # 0.3.1
 
+## 0.4.0
+
+- Independent touch D-pad and hold-to-fire controls, compact mobile scoreboard with expanded results, colored native bit highlights, and abstract site previews. Shared engine 0.9.0.
+
 - Adopt engine 0.8.0: native target-attached beacons, quieter mobile fills, fewer board rescans and one reusable collision measurement Range.
 - Preserve real text mutation and conditional Recall; pause/cancel native effects with the game lifecycle.
 

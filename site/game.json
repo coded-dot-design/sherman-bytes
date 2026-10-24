@@ -72,5 +72,35 @@
     "src/fortifications.ts",
     "src/rules.ts",
     "shared/ORIGIN.json"
+  ],
+  "characters": [
+    {
+      "icon": "tank",
+      "name": "Your Sherman",
+      "role": "Commander",
+      "rules": "Drive with arrows or the D-pad; hold Fire or Space to shoot. Mouse aiming controls the turret on desktop. Blast text into binary and capture button bases.",
+      "color": ""
+    },
+    {
+      "icon": "tank",
+      "name": "Scout tank",
+      "role": "35 armor",
+      "rules": "A lighter enemy that flanks and fires at you. Destroy it for points and two scrap.",
+      "color": "#fa9361"
+    },
+    {
+      "icon": "tank",
+      "name": "Heavy tank",
+      "role": "70 armor",
+      "rules": "Joins siege waves from wave 2. Takes more damage to destroy and drops four scrap. Keep cover between you and incoming shells.",
+      "color": "#f36979"
+    },
+    {
+      "icon": "engineer",
+      "name": "Field engineer",
+      "role": "Builder",
+      "rules": "B builds cover, T builds a pillbox, M plants a mine. Spend scrap and leave space in front of your tank for construction.",
+      "color": ""
+    }
   ]
 }
