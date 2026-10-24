@@ -1,4 +1,8 @@
-# 0.3.1
+# Changelog
+
+## 0.4.3
+
+- Use a balanced flat palette for tanks, shells, native base effects, binary text and the site. Retain raised buttons and native scrolling behavior.
 
 ## 0.4.2
 

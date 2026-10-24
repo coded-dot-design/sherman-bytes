@@ -16,7 +16,7 @@ export function createShermanBytes(
     {
       id: "sherman-bytes",
       title: "SHERMAN BYTES",
-      color: "#65ff00",
+      color: "#4bce82",
       hud: "arcade",
       hint: "WASD / arrows: drive · Mouse: aim · Space: fire · B: cover · T: pillbox · M: mine",
       capabilities: { fire: true },

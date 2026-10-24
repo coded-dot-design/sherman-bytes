@@ -86,14 +86,14 @@
       "name": "Scout tank",
       "role": "35 armor",
       "rules": "A lighter enemy that flanks and fires at you. Destroy it for points and two scrap.",
-      "color": "#ff343b"
+      "color": "#ee6875"
     },
     {
       "icon": "tank",
       "name": "Heavy tank",
       "role": "70 armor",
       "rules": "Joins siege waves from wave 2. Takes more damage to destroy and drops four scrap. Keep cover between you and incoming shells.",
-      "color": "#ff168f"
+      "color": "#f4457a"
     },
     {
       "icon": "engineer",
@@ -106,23 +106,23 @@
   "palette": [
     {
       "label": "Tank / bits",
-      "color": "#65ff00"
+      "color": "#4bce82"
     },
     {
       "label": "Enemy",
-      "color": "#ff343b"
+      "color": "#ee6875"
     },
     {
       "label": "Heavy",
-      "color": "#ff168f"
+      "color": "#f4457a"
     },
     {
       "label": "Shell",
-      "color": "#00e5ff"
+      "color": "#06c4ff"
     },
     {
       "label": "Power",
-      "color": "#ffea00"
+      "color": "#cdde00"
     }
   ]
 }

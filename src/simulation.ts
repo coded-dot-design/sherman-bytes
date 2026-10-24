@@ -838,9 +838,9 @@ export function createGame(
       ctx.setLineDash([]);
       const x = job.from.x + (c.x - job.from.x) * t,
         y = job.from.y + (c.y - job.from.y) * t;
-      ctx.fillStyle = "#00e5ff";
+      ctx.fillStyle = "#06c4ff";
       ctx.fillRect(x - 3, y - 5, 6, 4);
-      ctx.fillStyle = "#ff168f";
+      ctx.fillStyle = "#f4457a";
       ctx.fillRect(x - 4, y - 1, 8, 6);
       ctx.fillRect(x - 4, y + 5, 3, 4);
       ctx.fillRect(x + 1, y + 5, 3, 4);

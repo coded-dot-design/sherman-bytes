@@ -23,7 +23,7 @@ export function tankSprites(doc: Document) {
         c.fillStyle = "#151020";
         c.fillRect(3, 5, 26, 7);
         c.fillRect(3, 21, 26, 7);
-        c.fillStyle = "#a855ff";
+        c.fillStyle = "#8573ee";
         for (let i = 0; i < 6; i++) {
           c.fillRect(4 + i * 4 + frame, 6, 2, 5);
           c.fillRect(4 + i * 4 + frame, 22, 2, 5);
@@ -35,7 +35,7 @@ export function tankSprites(doc: Document) {
         c.fillStyle = "#241a35";
         c.fillRect(7, 12, 4, 9);
         c.fillRect(13, 13, 4, 7);
-        c.fillStyle = "#00e5ff";
+        c.fillStyle = "#06c4ff";
         c.fillRect(20, 14, 2, 5);
         c.fillRect(18, 16, 6, 1);
         return tile;
@@ -57,7 +57,7 @@ export function tankSprites(doc: Document) {
     ctx.fillRect(-4, -4, 5, 8);
     ctx.fillRect(20 - recoil, -2, 3, 4);
     if (recoil > 1) {
-      ctx.fillStyle = "#ffea00";
+      ctx.fillStyle = "#cdde00";
       ctx.fillRect(26 - recoil, -3, 5, 6);
     }
     ctx.restore();

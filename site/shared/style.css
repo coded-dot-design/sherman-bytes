@@ -7,7 +7,7 @@
   --muted: #cec0e0;
   --faint: #b39acd;
   --line: #49345e;
-  --accent: #ff168f;
+  --accent: #f4457a;
   --accent-ink: #21051a;
   --grid: #ffffff05;
   --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -24,19 +24,19 @@ html[data-theme="light"] {
   --muted: #574967;
   --faint: #6a597b;
   --line: #d9cfe8;
-  --accent: #ff168f;
-  --accent-text: #cf0068;
+  --accent: #f4457a;
+  --accent-text: #a93268;
   --accent-ink: #21051a;
   --grid: #7c00ff08;
 }
 .accent-cyan,
 .cyan {
-  --accent: #00e5ff;
+  --accent: #06c4ff;
   --accent-ink: #102528;
 }
 .accent-lime,
 .lime {
-  --accent: #65ff00;
+  --accent: #4bce82;
   --accent-ink: #1b2710;
 }
 .accent-violet,
@@ -46,13 +46,13 @@ html[data-theme="light"] {
 }
 html[data-theme="light"] .accent-cyan,
 html[data-theme="light"] .cyan {
-  --accent: #00e5ff;
-  --accent-text: #0055e8;
+  --accent: #06c4ff;
+  --accent-text: #247488;
   --accent-ink: #061b29;
 }
 html[data-theme="light"] .accent-lime,
 html[data-theme="light"] .lime {
-  --accent: #65ff00;
+  --accent: #4bce82;
   --accent-text: #171022;
   --accent-ink: #102006;
 }
@@ -399,7 +399,7 @@ section {
   position: absolute;
   width: 3px;
   height: 17px;
-  background: #00e5ff;
+  background: #06c4ff;
   right: 108px;
   bottom: 150px;
   transform: rotate(-35deg);
@@ -755,7 +755,7 @@ details > div {
   color: var(--accent-text, var(--accent));
 }
 .engineering {
-  --accent: #a855ff;
+  --accent: #8573ee;
   margin: 100px 0 70px;
   padding: 42px 30px 70px;
   border: 1px solid var(--line);
@@ -764,7 +764,7 @@ details > div {
 }
 html[data-theme="light"] .engineering {
   --accent: #6c26ff;
-  --accent-text: #6420e8;
+  --accent-text: #7654a6;
   --accent-ink: #fff;
   background: #f4efff;
 }
@@ -1178,14 +1178,6 @@ pre {
 .skip:focus {
   top: 10px;
 }
-@media (min-width: 1300px) {
-  main {
-    border-inline: 1px solid var(--line);
-  }
-  .site-header {
-    border-inline: 1px solid var(--line);
-  }
-}
 @media (max-width: 1000px) {
   .hero-grid {
     gap: 30px;
@@ -1513,19 +1505,19 @@ pre {
 
 .accent-amber,
 .amber {
-  --accent: #ff343b;
+  --accent: #ee6875;
   --accent-ink: #292014;
 }
 html[data-theme="light"] .accent-amber,
 html[data-theme="light"] .amber {
-  --accent: #ff343b;
-  --accent-text: #d41535;
+  --accent: #ee6875;
+  --accent-text: #b13f4b;
   --accent-ink: #270508;
 }
 .art-character.amber {
   left: 38%;
   top: 65%;
-  color: #ff343b;
+  color: #ee6875;
 }
 [data-sherman-wall] {
   border: 1px dashed var(--accent);
@@ -1577,21 +1569,21 @@ html[data-theme="light"] :is(.hero-art, .game-display) {
   border-color: #171022;
 }
 .hero-art {
-  box-shadow: 7px 7px 0 #ff168f;
+  box-shadow: 7px 7px 0 #f4457a;
 }
 html[data-theme="light"] :is(.art-character, .arena-character, .arena-enemy) {
   color: var(--accent);
 }
-.arena-enemy.one { color: #ff168f; }
-.arena-enemy.two { color: #a855ff; }
-html[data-theme="light"] .art-bullet { background: #00e5ff; }
-html[data-theme="light"] .art-character.amber { color: #ff343b; }
+.arena-enemy.one { color: #f4457a; }
+.arena-enemy.two { color: #8573ee; }
+html[data-theme="light"] .art-bullet { background: #06c4ff; }
+html[data-theme="light"] .art-character.amber { color: #ee6875; }
 .button.primary {
   border-color: var(--ink);
   box-shadow: 3px 3px 0 var(--ink);
 }
 html[data-theme="light"] .theme-switch button[aria-pressed="true"] {
-  background: #ff168f;
+  background: #f4457a;
   color: #21051a;
 }
 .game-tab > svg {
@@ -1610,7 +1602,7 @@ html[data-theme="light"] .game-section {
 }
 html[data-theme="light"] .accent-lime :is(.game-intro h2 > span, .game-facts b, .index, h3) {
   text-decoration: underline;
-  text-decoration-color: #65ff00;
+  text-decoration-color: #4bce82;
   text-decoration-thickness: 4px;
   text-underline-offset: 5px;
 }
@@ -1619,7 +1611,7 @@ html[data-theme="light"] .character-portrait {
   border-color: #49385f;
 }
 html[data-theme="light"] :is(button, a, summary):focus-visible {
-  outline-color: #6420e8;
+  outline-color: #7654a6;
 }
 @media (max-width: 650px) {
   .game-section {
@@ -1679,3 +1671,9 @@ html[data-theme="light"] :is(button, a, summary):focus-visible {
 .game-tab>svg{border:1px solid var(--accent);box-shadow:2px 2px 0 var(--accent);border-radius:4px}
 .palette-swatch i{box-shadow:2px 2px 0 var(--ink);border-radius:3px}
 @media(prefers-reduced-motion:reduce){.button,.art-button,.arena-targets button{transition:none}}
+
+/* Swarm retains its established palette while the rest of the arcade softens. */
+#swarm-protocol .arena-enemy.one{color:#ff168f}
+#swarm-protocol .arena-enemy.two{color:#a855ff}
+html[data-theme="light"] #swarm-protocol .arena-enemy{color:#ff168f}
+html[data-theme="light"] .accent-violet :is(button,a,summary):focus-visible{outline-color:#6420e8}

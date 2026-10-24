@@ -41,7 +41,7 @@ export function createTerrain(api: GameContext, options: TerrainOptions) {
           if (host) {
             const marker = doc.createElement('i');
             marker.setAttribute('data-sherman-cover', '');
-            marker.style.cssText = 'position:absolute;inset:-2px;border:1px dashed #00e5ff;pointer-events:none;border-radius:inherit';
+            marker.style.cssText = 'position:absolute;inset:-2px;border:1px dashed #06c4ff;pointer-events:none;border-radius:inherit';
             host.append(marker); decorations.set(element, marker);
           }
         }
