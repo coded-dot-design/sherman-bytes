@@ -22,7 +22,10 @@ Open the exact URL printed by Astro. Press **Play Sherman Bytes**. `npm run dev:
 - Letters block movement and shells. Blast gaps into faint binary rubble you can cross.
 - Buttons spawn tanks. Shoot a base down, then occupy it for 0.7 seconds to capture it.
 - Captured bases stop spawning, repair armor while occupied, and defend against nearby tanks.
-- Capture every base and destroy the remaining enemies to win. Zero armor ends the run.
+- **B** builds cover (2 scrap), **T** a pillbox (8), **M** a mine (3). Aim at clear ground. The engineer takes 0.65 seconds; blocked jobs refund their cost.
+- Earn scrap through combat, text clearing, captured bases and wave completion. Start with 16. Cover blocks friendly shots too: leave firing lanes.
+- Siege waves arrive in squads, with an eight-second build break after you clear each wave. Capturing all bases moves reinforcements to the viewport edges. Zero armor ends the run.
+- Set `mode: "conquest"` for the original capture-all victory condition. Set `fortifications: false` to omit the initial button walls.
 
 ## Embed
 
@@ -36,6 +39,8 @@ const game = createShermanBytes({
   targetSelector: "button, [data-base]",
   wallSelector: "[data-sherman-wall]",
   binaryOpacity: 0.32,
+  mode: "siege",
+  fortifications: true,
 });
 game.start();
 // At component teardown:
@@ -53,9 +58,9 @@ Visual mode uses CSS Custom Highlights to conceal spent glyphs and paints binary
 
 ## Performance and scope
 
-Strict TypeScript; one runtime frame loop; 18 pooled enemy tanks; 80 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
+Strict TypeScript; one runtime frame loop; 32 pooled enemy tanks; 120 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
 
-The 22 kB gzip distribution budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. This first release has three cannon tiers and original scout/heavy enemies. Multiplayer, mines and a construction drone are future features.
+The 22 kB gzip distribution budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. The shared wave director caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
 
 ## Checks and hosting
 
@@ -76,4 +81,4 @@ CI tags tested package versions as `vX.Y.Z`; existing tags are never moved. The 
 
 ## Inspiration
 
-[Original Macintosh Bolo manual](https://web.archive.org/web/20070518053532/http://bishop.mc.duke.edu/bolo/guides/bolomanual/), Stuart Cheshire. Sherman Bytes is an independent coded.design project.
+[Original Macintosh Bolo manual](https://dialup.party/~jolo/bolo/guides/bolomanual/), Stuart Cheshire. Sherman Bytes is an independent coded.design project.

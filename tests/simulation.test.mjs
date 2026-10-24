@@ -32,6 +32,7 @@ function fixture({
   baseRect = rect(470, 360, 60, 30),
   walls = [],
   glyphs = [],
+  battle = { mode: "conquest", fortifications: false },
 } = {}) {
   const events = [];
   const base = {
@@ -91,7 +92,7 @@ function fixture({
     },
   };
   const terrain = { walls, refresh() {}, invalidate() {} };
-  const game = createGame(api, terrain);
+  const game = createGame(api, terrain, battle);
   game.reset();
   const tick = (n = 1) => {
     for (let i = 0; i < n; i++) {
@@ -105,8 +106,8 @@ test("starting a round and resetting preserves bounded, empty state", () => {
   const { game, api, tick } = fixture();
   api.firing = true;
   tick(200);
-  assert.ok(game.snapshot().shells <= 80);
-  assert.ok(game.snapshot().alive <= 18);
+  assert.ok(game.snapshot().shells <= 120);
+  assert.ok(game.snapshot().alive <= 32);
   game.reset();
   assert.equal(game.snapshot().armor, 100);
   assert.equal(game.snapshot().captured, 0);
@@ -186,7 +187,7 @@ test("clear, empty pages remain playable without inventing hostile bases", () =>
   tick(500);
   assert.equal(game.snapshot().alive, 0);
   assert.equal(game.snapshot().bases, 0);
-  assert.ok(game.snapshot().shells <= 80);
+  assert.ok(game.snapshot().shells <= 120);
 });
 test("enemy tanks spawn, shoot, damage armor, and end an undefended round", () => {
   const { game, api, events, tick } = fixture();
@@ -194,8 +195,8 @@ test("enemy tanks spawn, shoot, damage armor, and end an undefended round", () =
   assert.ok(events.some((e) => e.type === "spawn"));
   assert.equal(game.snapshot().armor, 0);
   assert.equal(api.finished, false);
-  assert.ok(game.snapshot().alive <= 18);
-  assert.ok(game.snapshot().shells <= 80);
+  assert.ok(game.snapshot().alive <= 32);
+  assert.ok(game.snapshot().shells <= 120);
 });
 test("a shell opens a crater, awards letters once, and advances the cannon", () => {
   const glyphs = Array.from({ length: 24 }, (_, i) => ({
@@ -244,4 +245,133 @@ test("shrinking the viewport redeploys the tank into visible terrain", () => {
   const p = game.snapshot().player;
   assert.ok(p.x >= 14 && p.x <= 346);
   assert.ok(p.y >= 14 && p.y <= 386);
+});
+
+test("siege prepares, then deploys squads instead of single tanks", () => {
+  const { game, events, tick } = fixture({ battle: { fortifications: false } });
+  tick(199);
+  assert.equal(game.snapshot().phase, "prepare");
+  assert.equal(game.snapshot().alive, 0);
+  tick(20);
+  assert.equal(game.snapshot().wave, 1);
+  assert.ok(game.snapshot().alive >= 2);
+  assert.ok(events.some((e) => e.type === "wave-start"));
+});
+test("walls absorb shells before the button and a breached wall stays destroyed", () => {
+  const { api, base, game, tick } = fixture({ battle: { mode: "conquest" } });
+  assert.equal(game.snapshot().barriers, 4);
+  api.firing = true;
+  tick(20);
+  assert.equal(base.health, 100);
+  tick(20);
+  assert.equal(game.snapshot().barriers, 3);
+  tick(60);
+  assert.equal(base.health, 0);
+  api.firing = false;
+  tick(20);
+  assert.equal(game.snapshot().barriers, 3);
+});
+test("construction reserves scrap, completes once, and blocks repeated commands", () => {
+  const { game, tick, events } = fixture();
+  game.action("cover");
+  assert.equal(game.snapshot().scrap, 14);
+  assert.equal(game.snapshot().building, "cover");
+  game.action("pillbox");
+  assert.equal(game.snapshot().scrap, 14);
+  tick(34);
+  assert.equal(game.snapshot().cover, 1);
+  assert.equal(game.snapshot().building, null);
+  assert.equal(events.filter((e) => e.type === "structure-built").length, 1);
+});
+test("blocked construction never spends scrap", () => {
+  const { game, api, tick } = fixture({ walls: [rect(470, 495, 60, 20)] });
+  game.action("cover");
+  assert.equal(game.snapshot().scrap, 16);
+  assert.equal(game.snapshot().building, null);
+  api.board.targets = [];
+  tick();
+  game.reset();
+  assert.equal(game.snapshot().cover, 0);
+});
+test("a moving obstacle cancels a pending build and refunds exactly its cost", () => {
+  const { game, terrain, tick } = fixture();
+  game.action("pillbox");
+  assert.equal(game.snapshot().scrap, 8);
+  terrain.walls.push(rect(480, 490, 40, 40));
+  tick(34);
+  assert.equal(game.snapshot().scrap, 16);
+  assert.equal(game.snapshot().pillboxes, 0);
+});
+test("cover blocks tank movement and can be shot apart to reopen the path", () => {
+  const { game, api, tick } = fixture();
+  game.action("cover");
+  tick(34);
+  api.input.keys.add("ArrowUp");
+  tick(20);
+  assert.ok(game.snapshot().player.y >= 524);
+  api.input.keys.clear();
+  api.firing = true;
+  tick(85);
+  assert.equal(game.snapshot().cover, 0);
+});
+test("a pillbox leads moving enemies and earns salvage for its kills", () => {
+  const { game, tick } = fixture();
+  game.action("pillbox");
+  tick(400);
+  assert.ok(game.snapshot().kills > 0);
+  assert.ok(game.snapshot().scrap >= 10);
+});
+test("mines trigger on hostile tanks and are removed after detonation", () => {
+  const { game, tick, events } = fixture();
+  game.action("mine");
+  tick(600);
+  assert.ok(events.some((e) => e.type === "mine-detonated"));
+  assert.equal(game.snapshot().mines, 0);
+  assert.ok(game.snapshot().kills > 0);
+});
+test("capturing the last base keeps siege alive and moves spawning to the page edges", () => {
+  const { api, base, game, tick, events } = fixture({
+    battle: { fortifications: false },
+  });
+  base.health = 0;
+  api.input.keys.add("ArrowUp");
+  tick(49);
+  api.input.keys.clear();
+  tick(40);
+  assert.equal(game.snapshot().captured, 1);
+  assert.equal(api.finished, undefined);
+  tick(130);
+  assert.ok(
+    events.some((e) => e.type === "spawn" && e.base === "reinforcement"),
+  );
+});
+test("Recall/reset state drops all player structures and restarts wave resources", () => {
+  const { game, tick } = fixture({ battle: { fortifications: false } });
+  game.action("cover");
+  tick(34);
+  assert.equal(game.snapshot().cover, 1);
+  game.reset();
+  assert.equal(game.snapshot().cover, 0);
+  assert.equal(game.snapshot().scrap, 16);
+  assert.equal(game.snapshot().phase, "prepare");
+  assert.equal(game.snapshot().wave, 1);
+});
+
+test("unaffordable construction cannot overdraw scrap", () => {
+  const { game, api, tick } = fixture();
+  api.board.targets = [];
+  tick();
+  game.action("pillbox");
+  tick(34);
+  api.input.keys.add("ArrowRight");
+  tick(32);
+  api.input.keys.clear();
+  tick();
+  game.action("pillbox");
+  tick(34);
+  assert.equal(game.snapshot().scrap, 0);
+  game.action("cover");
+  assert.equal(game.snapshot().building, null);
+  assert.equal(game.snapshot().scrap, 0);
+  assert.equal(game.snapshot().cover, 0);
 });

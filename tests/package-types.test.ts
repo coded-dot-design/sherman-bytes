@@ -4,6 +4,8 @@ const game = createShermanBytes({
   root: "main",
   wallSelector: "[data-wall]",
   binaryOpacity: 0.32,
+  mode: "siege",
+  fortifications: true,
 });
 game.getSnapshot().armor?.toFixed();
 // @ts-expect-error Snapshots preserve numeric armor.
@@ -14,3 +16,7 @@ ShermanBytes({
   active: true,
   options: { theme: "system", wallSelector: "aside" },
 });
+
+game.getSnapshot().scrap?.toFixed();
+// @ts-expect-error Only documented battle modes are accepted.
+createShermanBytes({ mode: "multiplayer" });

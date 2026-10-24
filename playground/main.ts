@@ -7,7 +7,7 @@ document.querySelector("#launch")!.addEventListener("click", () => {
     root: "main",
     targetSelector: "[data-base]",
     onState: (state) => {
-      status.textContent = `${state.status} · ${state.armor ?? 100}% armor · ${state.captured ?? 0}/${state.bases ?? 0} bases`;
+      status.textContent = `${state.status} · wave ${state.wave ?? 1} · ${state.scrap ?? 16} scrap · ${state.armor ?? 100}% armor · ${state.captured ?? 0}/${state.bases ?? 0} bases`;
     },
   });
   game.start();

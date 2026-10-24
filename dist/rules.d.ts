@@ -1,6 +1,6 @@
 import type { Point, Rect } from "./core/index.js";
-export declare const MAX_TANKS = 18;
-export declare const MAX_SHELLS = 80;
+export declare const MAX_TANKS = 32;
+export declare const MAX_SHELLS = 120;
 export declare const TANK_RADIUS = 10;
 export declare const BASE_HEALTH = 100;
 export declare const COLORS: {

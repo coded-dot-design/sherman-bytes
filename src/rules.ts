@@ -1,6 +1,6 @@
 import type { Point, Rect } from "@coded-design/dom-virus";
-export const MAX_TANKS = 18;
-export const MAX_SHELLS = 80;
+export const MAX_TANKS = 32;
+export const MAX_SHELLS = 120;
 export const TANK_RADIUS = 10;
 export const BASE_HEALTH = 100;
 export const COLORS = {
