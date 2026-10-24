@@ -64,7 +64,7 @@
   "code": "const game = createShermanBytes({\n  root: \"main\",\n  textSelector: \"h1, h2, p\",\n  targetSelector: \"button, [data-base]\",\n  wallSelector: \"[data-sherman-wall]\",\n  binaryOpacity: 0.32,\n  mode: \"siege\", // or \"conquest\"\n  fortifications: true,\n});\ngame.start();\n// Later: game.destroy();",
   "importLine": "import { createShermanBytes } from \"@coded-design/sherman-bytes\";",
   "engine": "Shared TypeScript runtime · original single-player tank simulation",
-  "extra": "Visual binary opacity is 0.32 by default and preserves original text nodes. Explicit direct-text mode writes literal binary and does not fade individual glyphs. No mutation of page structure, cloned HTML, or copied Bolo assets. Recall removes owned effects and restores eligible button styles.",
+  "extra": "Shells write literal 0/1 into the existing Text nodes. Optional binaryOpacity styles the real digits using CSS Highlights; without that API they stay fully visible. No replacement letters on canvas, cloned HTML, or per-letter spans. Recall restores still-owned text and button styles.",
   "sourcePaths": [
     "src/simulation.ts",
     "src/terrain.ts",

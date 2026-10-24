@@ -54,7 +54,7 @@ import { ShermanBytes } from "@coded-design/sherman-bytes/react";
 
 Default targets include generic buttons/headings/paragraphs. Forms, editable content, live regions, dialogs and `data-virus-ignore` remain excluded. Hard cover is explicit: add `data-sherman-wall` to selected elements, or set `wallSelector`. Do not select full-page containers as walls.
 
-Visual mode uses CSS Custom Highlights to conceal spent glyphs and paints binary in their original geometry with reduced opacity. Original text nodes remain intact. CSS Highlights are required in this mode. `domMode: "text"` is an explicit alternative for static content; it writes literal binary and does not fade individual letters. Recall restores still-owned writes and preserves newer host application changes.
+Hits replace characters in the existing DOM Text nodes with literal 0 or 1. There are no canvas replacement letters, cloned text, or per-letter wrappers. The ownership ledger records the original and latest game-written value per node. Recall restores only still-owned values; newer host edits win. Changing a proportional-font letter into a digit can reflow text, so the bounded geometry cache is invalidated and refreshed.
 
 ## Performance and scope
 

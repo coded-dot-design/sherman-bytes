@@ -375,3 +375,22 @@ test("unaffordable construction cannot overdraw scrap", () => {
   assert.equal(game.snapshot().scrap, 0);
   assert.equal(game.snapshot().cover, 0);
 });
+
+test("scrap airdrops can be collected by driving over their landing site", () => {
+  const { api, game, tick, events } = fixture();
+  api.board.targets = [];
+  tick(450);
+  assert.equal(game.snapshot().supplies, 1);
+  assert.equal(game.snapshot().scrap, 16);
+  api.input.keys.add("ArrowRight");
+  tick(29);
+  api.input.keys.clear();
+  api.input.keys.add("ArrowUp");
+  tick(23);
+  api.input.keys.clear();
+  assert.equal(game.snapshot().scrap, 22);
+  assert.equal(game.snapshot().supplies, 0);
+  assert.equal(events.filter((e) => e.type === "supply-collected").length, 1);
+  game.reset();
+  assert.equal(game.snapshot().supplies, 0);
+});

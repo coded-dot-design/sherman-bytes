@@ -11,6 +11,7 @@ export interface ShermanBytesStats extends GameStats {
     kills: number;
     alive: number;
     shells: number;
+    supplies: number;
     armor: number;
     captured: number;
     bases: number;

@@ -1,3 +1,10 @@
+# 0.3.0
+
+- Replace actual DOM text with literal 0/1 on every consumed letter; remove visual-only canvas substitution. Byte Runner leaves binary instead of erased spaces.
+- Track original and latest owned Text values for Recall, preserving newer host updates and existing node identity.
+- Adopt engine 0.7.0: fewer layout reads for spent text, no binary canvas, optional fading of real digits, and no CSS Highlights requirement.
+- Update the integration guide and technical page to describe actual mutation and layout refresh.
+
 # 0.2.0
 
 - Add escalating siege squads, wave completion rewards and eight-second fortification breaks. Keep the original win condition as `mode: "conquest"`.

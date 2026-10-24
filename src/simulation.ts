@@ -4,6 +4,7 @@ import {
   translateEntities,
   clamp,
   WaveDirector,
+  SupplyDrops,
 } from "@coded-design/dom-virus";
 import type {
   GameContext,
@@ -86,6 +87,7 @@ export interface ShermanBytesStats extends GameStats {
   kills: number;
   alive: number;
   shells: number;
+  supplies: number;
   armor: number;
   captured: number;
   bases: number;
@@ -149,6 +151,9 @@ export function createGame(
   const bases = new Map<BoardTarget, Base>();
   const structures: Structure[] = [];
   const waves = new WaveDirector(MAX_TANKS);
+  const supplies = new SupplyDrops();
+  let supplyIn = 8,
+    supplyTurn = 0;
   const siege = options.mode !== "conquest";
   let scrap = 16,
     salvaged = 0,
@@ -850,6 +855,9 @@ export function createGame(
     salvaged = 0;
     supplyClock = 0;
     waves.reset();
+    supplies.reset();
+    supplyIn = 8;
+    supplyTurn = 0;
     api.board.resetTargets(BASE_HEALTH);
     syncBases();
     score = xp = kills = 0;
@@ -982,6 +990,27 @@ export function createGame(
       }
       if (distance < 21) hurt(8);
     }
+    supplyIn -= dt;
+    if (supplyIn <= 0) {
+      supplyIn = 14;
+      const location = freePosition(
+        clamp(player.x + 100, 25, api.width - 25),
+        clamp(player.y - 80, 90, api.height - 25),
+      );
+      const kind = supplyTurn++ % 2 ? "repair" : "scrap";
+      if (location && supplies.spawn(location, kind))
+        api.emit("supply-drop", { kind });
+    }
+    supplies.update(dt, player, (kind) => {
+      if (kind === "repair") {
+        player.hp = Math.min(100, player.hp + 25);
+        api.popup(player.x, player.y - 28, "+25 ARMOR", "upgrade");
+      } else {
+        salvage(6);
+        api.popup(player.x, player.y - 28, "+6 SCRAP", "upgrade");
+      }
+      api.emit("supply-collected", { kind });
+    });
     updateFortifications(dt);
     updateShells(dt);
     if (ended) return;
@@ -998,6 +1027,7 @@ export function createGame(
   }
   function draw(ctx: CanvasRenderingContext2D) {
     drawFortifications(ctx);
+    supplies.draw(ctx);
     renderer ??= tankSprites(api.options.document ?? globalThis.document);
     ctx.save();
     ctx.lineWidth = 1;
@@ -1097,6 +1127,7 @@ export function createGame(
       kills,
       alive: tanks.length,
       shells: shells.length,
+      supplies: supplies.size,
       captured,
       bases: bases.size,
       cannon,
@@ -1133,6 +1164,7 @@ export function createGame(
     player.y -= dy;
     translateEntities(tanks, dx, dy);
     translateEntities(shells, dx, dy);
+    supplies.scroll(dx, dy);
     terrain.invalidate();
     for (const item of structures)
       if (!item.base) {

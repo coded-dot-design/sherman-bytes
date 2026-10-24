@@ -20,10 +20,11 @@ export interface BoardOptions {
     textSelector?: string;
     targetSelector?: string;
     excludeSelector?: string;
-    domMode?: "visual" | "text";
-    /** Native typography keeps binary replacements in the page's visual language. */
-    binaryStyle?: "native" | "neon";
-    /** Opacity of visual binary replacements; original text/layout stay intact. */
+    /** Text is always mutated. Kept for existing direct-text integrations. */
+    domMode?: "text";
+    /** @deprecated Actual text always inherits its native page typography. */
+    binaryStyle?: "native";
+    /** Optional fade of actual binary text via CSS Highlights; full opacity without that API. */
     binaryOpacity?: number;
     targetEffects?: "liquid" | "fade";
 }
@@ -99,12 +100,6 @@ export interface Glyph {
     spent: boolean;
     rect: Rect | null;
     range: Range | null;
-    typography?: {
-        font: string;
-        color: string;
-        ascent: number;
-        descent: number;
-    };
     bit: "0" | "1";
     effect?: "binary" | "erase";
 }
