@@ -60,7 +60,7 @@ Hits replace characters in the existing DOM Text nodes with literal 0 or 1. Ther
 
 Strict TypeScript; one runtime frame loop; 32 pooled enemy tanks; 120 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
 
-The 24 kB gzip distribution budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. The shared wave director caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
+The 26 kB gzip distribution budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. The shared wave director caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
 
 ## Checks and hosting
 
@@ -84,3 +84,8 @@ CI tags tested package versions as `vX.Y.Z`; existing tags are never moved. The 
 [Original Macintosh Bolo manual](https://dialup.party/~jolo/bolo/guides/bolomanual/), Stuart Cheshire. Sherman Bytes is an independent coded.design project.
 
 Target beacons now attach to their actual elements. Native layout handles their scrolling, clipping and transforms. Mobile uses stationary rings and stable fills. See the [shared DOM ownership design](https://github.com/coded-dot-design/dom-virus/blob/main/docs/dom-ownership.md).
+
+### Sound and controls
+
+The scoreboard always keeps sound, pause/resume, minimize/expand and Recall in the same order. Sound uses quiet synthesized effects, starts after a real gesture and can be muted. Pause stops active voices; Recall closes audio and restores the page. Mobile movement and fire remain available while the scoreboard is minimized.
+Cover (2 scrap), Pillbox (8) and Mine (3) buttons sit above Fire on mobile. The compact scoreboard keeps armor and scrap visible.

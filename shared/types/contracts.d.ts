@@ -36,6 +36,8 @@ export interface RuntimeOptions extends BoardOptions {
     controls?: "mouse" | "keyboard";
     /** Lock touch zoom while playing on mobile; scrolling remains native. Default true. */
     lockZoom?: boolean;
+    /** Synthesized effects. Starts only after user input; preference persists per game. */
+    sound?: boolean;
     reducedMotion?: boolean;
     seed?: number;
 }
@@ -53,6 +55,9 @@ export interface GameStats {
     hud?: ArcadeHud;
 }
 export interface ArcadeHud {
+    /** Optional concise resource and health readouts, also visible while minimized. */
+    resource?: string;
+    health?: string;
     kills: number;
     alive: number;
     combo: number;

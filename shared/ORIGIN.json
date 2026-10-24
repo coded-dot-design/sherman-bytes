@@ -1,7 +1,7 @@
 {
   "project": "https://github.com/coded-dot-design/dom-virus",
-  "version": "0.10.3",
-  "sourceSha256": "00092663fb4b835dc0d56f4bdc675feb43435677db35f64586f69b37ecf49c60",
+  "version": "0.11.0",
+  "sourceSha256": "30e7914eaff63337d9b532ea861cc8bcf573be3df3ba90f29d06e3a769f723d6",
   "license": "MIT",
   "note": "Generated engine, React adapter, declarations and builder. Edit dom-virus/src, then run npm run sync:games and rebuild each game."
 }

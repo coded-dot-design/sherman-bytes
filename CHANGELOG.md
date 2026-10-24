@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+Add mobile Cover, Pillbox and Mine controls beside movement/fire. Add synthesized battle cues and shared scoreboard controls; count structures without temporary snapshot arrays.
+
 ## 0.4.4
 
 - Keep native 0/1 highlight text bright with a transparent background, so light page surfaces show through.

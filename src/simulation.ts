@@ -1,4 +1,4 @@
-import { BasePresentation } from './base-presentation.js';
+import { BasePresentation } from "./base-presentation.js";
 import {
   EntityPool,
   segmentHit,
@@ -444,6 +444,7 @@ export function createGame(
     player.hp = Math.max(0, player.hp - power);
     shield = 0.6;
     player.flash = 0.2;
+    api.emit("hurt", { armor: player.hp });
     api.popup(player.x, player.y, `−${power} ARMOR`, "hurt");
     api.burst(player.x, player.y, COLORS.enemy, 7);
     if (player.hp <= 0) {
@@ -913,6 +914,7 @@ export function createGame(
       shoot(player, player.turret, true, true, cannon === 1 ? 25 : 35);
       player.fireIn = cannon === 3 ? 0.16 : cannon === 2 ? 0.24 : 0.32;
       player.recoil = 4;
+      api.emit("fire");
     }
     if (siege && bases.size) {
       const transition = waves.update(dt, tanks.length);
@@ -1085,7 +1087,19 @@ export function createGame(
     ctx.restore();
   }
   function snapshot(): ShermanBytesStats {
-    const captured = [...bases.values()].filter((b) => b.captured).length;
+    let captured = 0,
+      barriers = 0,
+      cover = 0,
+      pillboxes = 0,
+      mines = 0;
+    for (const base of bases.values()) if (base.captured) captured++;
+    for (const item of structures) {
+      if (item.hp <= 0) continue;
+      if (item.base) barriers++;
+      if (item.kind === "cover") cover++;
+      if (item.kind === "pillbox") pillboxes++;
+      if (item.kind === "mine") mines++;
+    }
     const nextXP = cannon === 1 ? 20 : 60;
     return {
       score,
@@ -1104,11 +1118,10 @@ export function createGame(
       phase: siege ? waves.phase : "conquest",
       incoming: siege ? waves.remaining : 0,
       countdown: Math.ceil(waves.countdown),
-      barriers: structures.filter((s) => s.base && s.hp > 0).length,
-      cover: structures.filter((s) => s.kind === "cover" && s.hp > 0).length,
-      pillboxes: structures.filter((s) => s.kind === "pillbox" && s.hp > 0)
-        .length,
-      mines: structures.filter((s) => s.kind === "mine" && s.hp > 0).length,
+      barriers,
+      cover,
+      pillboxes,
+      mines,
       building: construction?.kind ?? null,
       player: {
         x: player.x,
@@ -1118,6 +1131,8 @@ export function createGame(
       },
       detail: `${Math.ceil(player.hp)}% ARMOR · ${scrap} SCRAP · ${captured}/${bases.size} BASES · ${!bases.size ? "No bases: practice mode" : siege ? (waves.phase === "assault" ? `${waves.remaining} INCOMING` : `${waves.phase === "prepare" ? "DEPLOY" : "FORTIFY"} ${Math.ceil(waves.countdown)}s`) : "CONQUEST"}`,
       hud: {
+        resource: `${scrap} SCRAP`,
+        health: `${Math.ceil(player.hp)}% ARMOR`,
         kills,
         alive: tanks.length,
         combo: 1,
