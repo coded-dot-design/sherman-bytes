@@ -1,6 +1,6 @@
 {
   "name": "@coded-design/sherman-bytes",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "description": "Sherman Bytes: Bolo-inspired tank combat across the DOM. By Chris Cooley / coded.design.",
   "license": "MIT",

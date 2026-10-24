@@ -1,5 +1,9 @@
 # 0.3.1
 
+## 0.4.1
+
+- Reversible mobile pinch/double-tap zoom lock while playing; native scrolling remains available. Pause and Recall restore the host policy. Set `lockZoom: false` to opt out.
+
 ## 0.4.0
 
 - Independent touch D-pad and hold-to-fire controls, compact mobile scoreboard with expanded results, colored native bit highlights, and abstract site previews. Shared engine 0.9.0.

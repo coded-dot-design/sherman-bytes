@@ -32,6 +32,8 @@ export interface RuntimeOptions extends BoardOptions {
     document?: Document;
     theme?: "system" | "dark" | "light";
     controls?: "mouse" | "keyboard";
+    /** Lock touch zoom while playing on mobile; scrolling remains native. Default true. */
+    lockZoom?: boolean;
     reducedMotion?: boolean;
     seed?: number;
 }
