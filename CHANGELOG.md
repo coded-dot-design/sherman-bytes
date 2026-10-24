@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.4
+
+- Keep native 0/1 highlight text bright with a transparent background, so light page surfaces show through.
+
 ## 0.4.3
 
 - Use a balanced flat palette for tanks, shells, native base effects, binary text and the site. Retain raised buttons and native scrolling behavior.

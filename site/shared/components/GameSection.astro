@@ -4,7 +4,7 @@ import CharacterIcon from './Icon.astro';
 const { game, index = 0, single = false } = Astro.props;
 const repo=`https://github.com/coded-dot-design/${game.id}`;
 const kb=(n)=> (n/1000).toFixed(1);
-const enemy = ({ship:"ship",runner:"runner",bug:"bug",tank:"tank"})[game.icon];
+const enemy = ({ship:"ship",runner:"ghost",bug:"bug",tank:"tank"})[game.icon];
 ---
 <section id={game.id} class:list={['game-section', `accent-${game.accent}`]} aria-labelledby={`${game.id}-title`}>
   <div class="section-heading"><span class="eyebrow"><span class="index">0{index+1}</span> {game.kind}</span><span class="version">v{game.version} / MIT</span></div>

@@ -1677,3 +1677,17 @@ html[data-theme="light"] :is(button, a, summary):focus-visible {
 #swarm-protocol .arena-enemy.two{color:#a855ff}
 html[data-theme="light"] #swarm-protocol .arena-enemy{color:#ff168f}
 html[data-theme="light"] .accent-violet :is(button,a,summary):focus-visible{outline-color:#6420e8}
+
+/* Keep each button in its own color family as it lifts and presses. */
+:is(button,.button){--button-base:var(--surface);--button-ink:var(--ink);transition:transform 140ms cubic-bezier(.2,.8,.2,1),box-shadow 140ms cubic-bezier(.2,.8,.2,1),background-color 140ms ease,color 140ms ease,border-color 140ms ease}
+.button.primary,.art-button,.game-display .arena-targets button,.theme-switch button[aria-pressed="true"]{--button-base:var(--accent);--button-ink:#171022}
+.game-display .arena-targets button{background:var(--accent);color:#171022;border-color:#171022;--virus-power-color:var(--accent)}
+.game-display .arena-targets button:nth-child(2){--button-base:color-mix(in srgb,var(--accent) 88%,white);background:var(--button-base)}
+@media(hover:hover) and (pointer:fine){
+  :root :is(button,.button):not(:disabled):hover{background:color-mix(in srgb,var(--button-base) 84%,white);color:var(--button-ink);border-color:var(--ink);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);filter:none}
+  html[data-theme="light"] :is(.button.quiet,.code-heading button,.theme-switch button:not([aria-pressed="true"])):hover{background:color-mix(in srgb,var(--surface) 92%,var(--accent));color:var(--ink)}
+}
+:root :is(button,.button):not(:disabled):active{background:color-mix(in srgb,var(--button-base) 90%,#222e56);color:var(--button-ink);transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);transition-duration:55ms}
+.theme-switch button{display:grid;place-items:center;min-width:40px;min-height:40px;padding:6px;font-size:13px}
+.theme-switch button svg{width:22px;height:22px;display:block}
+@media(prefers-reduced-motion:reduce){:is(button,.button){transition:none}}
