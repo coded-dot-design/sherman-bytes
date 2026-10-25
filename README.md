@@ -1,5 +1,7 @@
 # Sherman Bytes
 
+> **Play it and read about it on DOM Virus:** https://coded-dot-design.github.io/dom-virus/games/sherman-bytes/ — this README holds the full technical details.
+
 **Every page is a battlefield.** Created by **Chris Cooley / coded.design**. MIT licensed.
 
 An independent, original, single-player DOM tank game inspired by the terrain, base capture and resupply ideas of Stuart Cheshire’s Bolo. Original pixel art; no Bolo code or assets.

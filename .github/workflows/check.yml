@@ -18,7 +18,6 @@ jobs:
       - run: npm run test:package
       - run: npm run size
       - run: npm run playground:build
-      - run: npm run site:build
       - run: git diff --exit-code -- dist shared
 
   tag-version:

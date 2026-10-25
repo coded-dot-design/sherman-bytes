@@ -35,7 +35,6 @@
     "node": ">=22.23.4"
   },
   "scripts": {
-    "dev": "node site/shared/scripts/prepare.mjs && astro dev --config site/astro.config.mjs",
     "build": "node scripts/build.mjs",
     "test": "node --import tsx --test tests/*.test.mjs",
     "check": "npm run typecheck && npm test && npm run build && npm run test:package",
@@ -43,11 +42,7 @@
     "size": "node scripts/size.mjs",
     "typecheck": "tsc --noEmit",
     "test:package": "tsc -p tsconfig.package.json",
-    "dev:playground": "vite --config vite.config.js",
-    "site:prepare": "node site/shared/scripts/prepare.mjs",
-    "site:build": "npm run site:typecheck && node site/shared/scripts/prepare.mjs && astro build --config site/astro.config.mjs && node site/shared/scripts/verify.mjs",
-    "site:preview": "astro preview --config site/astro.config.mjs",
-    "site:typecheck": "tsc -p site/shared/tsconfig.json"
+    "dev:playground": "vite --config vite.config.js"
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0"
@@ -58,11 +53,10 @@
     }
   },
   "devDependencies": {
-    "esbuild": "0.28.2",
-    "vite": "8.3.5",
-    "typescript": "7.0.2",
-    "tsx": "4.23.15",
     "@types/react": "19.3.0",
-    "astro": "7.4.2"
+    "esbuild": "0.28.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
   }
 }
