@@ -23,6 +23,13 @@ state is in [HANDOFF.md](HANDOFF.md). Move items to `CHANGELOG.md` when they shi
 - More enemy roles beyond scout and heavy (for example an engineer that repairs bases).
 - Better feedback for blocked construction (show why a build was refunded).
 
+### Multiplayer (later version, the Bolo promise)
+
+DOM VIRUS started with Bolo: a tank game played across a classroom network in 1990. Sherman Bytes is
+the closest descendant, so it's the natural first 2-player game. Plan (see the hub's FUTURE.md):
+peer to peer over WebRTC data channels, inputs-only lockstep or rollback on the fixed-step sim, the
+opponent as a ghost tank on your own page, and a couch (one keyboard/pad) mode first to test the rules.
+
 ### Performance and size
 
 - Re-tighten the 28 KB gzip budget after the controls layer lands (the touch kit added ~2 KB).
