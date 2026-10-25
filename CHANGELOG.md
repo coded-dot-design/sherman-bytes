@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2
+
+Mobile: the arrow D-pad becomes the shared analog thumbstick (8-way drive, deadzone + hysteresis); Fire is Battlefield's round crosshair button and Cover, Pillbox and Mine are 3D arcade buttons that act on press. Drive and Fire can be held together. Uses the dom-virus engine 0.21.0 snapshot; the gzip budget grows by 2 KB for the shared controls.
+
 ## 0.5.0
 
 Add mobile Cover, Pillbox and Mine controls beside movement/fire. Add synthesized battle cues and shared scoreboard controls; count structures without temporary snapshot arrays.

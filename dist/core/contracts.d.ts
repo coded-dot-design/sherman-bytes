@@ -190,5 +190,14 @@ export interface GameDefinition<S extends GameStats = GameStats> {
         label: string;
     }[];
     hud?: "arcade";
+    /**
+     * Mobile controls. `stick`: "8way" (default) or "4way" (dominant axis, for
+     * grid games). `primary`: an action id shown as the large round button when
+     * the game has no Fire; other actions become secondary buttons.
+     */
+    touch?: {
+        stick?: "8way" | "4way";
+        primary?: string;
+    };
     create(context: GameContext): GameSimulation<S>;
 }
