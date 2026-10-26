@@ -49,8 +49,6 @@ opponent as a ghost tank on your own page, and a couch (one keyboard/pad) mode f
 
 ### Docs and content cleanup
 
-- `README.md` still documents `npm run site:build` / `site:preview` and Astro Pages hosting, and
-  quotes a 26 kB budget; the site was retired and the budget is now 28 KB.
 - `site/game.json` controls and the "Your Sherman" character still say "arrows + fire" / "D-pad";
   mobile now uses the analog stick.
 

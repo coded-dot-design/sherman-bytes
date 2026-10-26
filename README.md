@@ -6,20 +6,24 @@
 
 An independent, original, single-player DOM tank game inspired by the terrain, base capture and resupply ideas of Stuart Cheshire’s Bolo. Original pixel art; no Bolo code or assets.
 
+## Where the game lives
+
+This repository is the game package. The game page lives on the DOM Virus hub at https://coded-dot-design.github.io/dom-virus/games/sherman-bytes/. This repository's Pages workflow only publishes a redirect to that page; there is no per-game site to build. The hub reads `site/game.json` (page copy) and `site/art.json` (tank art) from here and loads the tagged package.
+
 ## Run locally
 
-Use Node 24 (also recorded in `.nvmrc`). From this repository:
+Use Node 24 (see `.nvmrc`). From this repository:
 
 ```sh
 npm ci
-npm run dev
+npm run dev:playground
 ```
 
-Open the exact URL printed by Astro. Press **Play Sherman Bytes**. `npm run dev:playground` opens the smaller Vite proving ground. Both run from a standalone clone; sibling repositories are optional.
+Open the URL Vite prints (normally **http://127.0.0.1:5173**) and start the game. The playground in `playground/` is a fictional test page; it does not ship in the package. It runs from a standalone clone; with a sibling `dom-virus` checkout, Vite uses the live engine source instead of the `shared/` snapshot.
 
 ## Play
 
-- WASD/arrows drive; mouse aims the turret. With keyboard-only controls, the turret follows the hull.
+- WASD/arrows drive; mouse aims the turret. With keyboard-only controls, the turret follows the hull. On phones, an analog joystick drives and a round Fire button shoots.
 - Click/Space fires. P pauses. G jumps to a hostile base. Esc/Recall restores game-owned effects.
 - Letters block movement and shells. Blast gaps into faint binary rubble you can cross.
 - Buttons spawn tanks. Shoot a base down, then occupy it for 0.7 seconds to capture it.
@@ -62,20 +66,17 @@ Hits replace characters in the existing DOM Text nodes with literal 0 or 1. Ther
 
 Strict TypeScript; one runtime frame loop; 32 pooled enemy tanks; 120 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
 
-The 26 kB gzip distribution budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. The shared wave director caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
+`dist/index.js` and `dist/react.js` are each budgeted at 28 KB gzip; `npm run size` (`scripts/size.mjs`) fails the build above that. The budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. The shared wave director caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
 
-## Checks and hosting
+## Checks and releases
 
 ```sh
-npm run check
-npm run size
-npm run site:build
-npm run site:preview
+npm run check            # typecheck, unit tests, build, package types
+npm run size             # gzip sizes against the budget
+npm run playground:build
 ```
 
-Astro renders the shared product page and measured technical notes. Enable **Settings → Pages → Source: GitHub Actions** once. Main pushes run checks before deploying `artifacts/site`. The default base path is `/sherman-bytes/`. `SITE_BASE=/` is for a root-mounted preview only.
-
-CI tags tested package versions as `vX.Y.Z`; existing tags are never moved. The DOM VIRUS hub can pin those distributions and archive compatible older releases. Bump package and lockfile versions for runtime releases. Website-only changes do not require an npm release.
+CI runs the same checks on every push and tags tested package versions as `vX.Y.Z`; existing tags are never moved. The DOM VIRUS hub pins those tags. Bump `package.json`, the lockfile version and `CHANGELOG.md` together for a release. The hub reads `site/game.json` from the pinned tag, or from a separately pinned content commit, so copy can change without a game release.
 
 ## Shared engine provenance
 
