@@ -15,7 +15,7 @@
     "B — cover (2 scrap) · T — pillbox (8) · M — mine (3)",
     "P — pause · G — next hostile base · Esc — Recall",
     "Scoreboard: sound · pause / resume · minimize · Recall",
-    "On mobile: hold arrows + fire; tap Cover, Pillbox or Mine to build"
+    "On mobile: joystick to drive, hold Fire; tap Cover, Pillbox or Mine to build"
   ],
   "facts": [
     {
@@ -80,7 +80,7 @@
       "icon": "tank",
       "name": "Your Sherman",
       "role": "Commander",
-      "rules": "Drive with arrows or the D-pad; hold Fire or Space to shoot. Mouse aiming controls the turret on desktop. Blast text into binary and capture button bases.",
+      "rules": "Drive with arrows or the joystick; hold Fire or Space to shoot. Mouse aiming controls the turret on desktop. Blast text into binary and capture button bases.",
       "color": ""
     },
     {
