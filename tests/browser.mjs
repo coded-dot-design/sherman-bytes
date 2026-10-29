@@ -153,6 +153,8 @@ try {
   console.log("Sherman Bytes browser: bases and walls, hard cover, firing into the page, driving, building, links and fields, pause, Recall restores exactly, frame time, game over (Escape closes it), failed start leaves nothing, phone stick passed.");
 } catch (err) {
   console.error(`browser test failed at: ${where}`);
+  // On CI, also as an annotation (readable from the checks API without the log).
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=browser test failed at ${where}::${String(err?.message ?? err).replace(/\r?\n/g, " ").slice(0, 900)}`);
   throw err;
 } finally {
   await browser.close();
