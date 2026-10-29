@@ -2,7 +2,7 @@
   "note": "Generated snapshot. Edit coded-dot-design/fizlet, then run node scripts/sync.mjs.",
   "repository": "https://github.com/coded-dot-design/fizlet",
   "version": "0.13.0",
-  "commit": "5a25ef45e1c44fcd6626c112210a7d7799a5cd68",
+  "commit": "006f92a5af815102f002d6049cfc1470330c02ba",
   "files": [
     {
       "path": "arcade.ts",
