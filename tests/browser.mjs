@@ -55,13 +55,18 @@ try {
   await page.waitForTimeout(500);
   await page.keyboard.up("ArrowLeft");
   assert.ok((await state(page)).player.x < p.x - 20, "drove left");
-  // B builds cover ahead of the turret (aim at open ground below): scrap is spent.
+  // B builds cover ahead of the turret. The site must be clear (page text blocks it, and fonts
+  // differ between machines), so aim around the tank until a build starts.
   const q = (await state(page)).player;
-  await page.mouse.move(q.x, Math.min(780, q.y + 120));
-  await page.keyboard.press("KeyB");
+  for (let k = 0; k < 8 && !(await page.evaluate(() => window.events.includes("build-start"))); k++) {
+    const a = (k * Math.PI) / 4;
+    await page.mouse.move(q.x + Math.cos(a) * 120, q.y + Math.sin(a) * 120);
+    await page.keyboard.press("KeyB");
+    await page.waitForTimeout(80);
+  }
+  assert.ok(await page.evaluate(() => window.events.includes("build-start")), "B started a build");
   await page.waitForTimeout(900);
   s = await state(page);
-  assert.ok(await page.evaluate(() => window.events.includes("build-start")), "B started a build");
   assert.equal(s.cover, 1, "the cover is up");
   // A click on a link does not follow it while playing.
   await page.click("#link");
