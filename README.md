@@ -19,7 +19,7 @@ npm ci
 npm run dev:playground
 ```
 
-Open the URL Vite prints (normally **http://127.0.0.1:5173**) and start the game. The playground in `playground/` is a fictional test page; it does not ship in the package. It runs from a standalone clone; with a sibling `dom-virus` checkout, Vite uses the live engine source instead of the `shared/` snapshot.
+Open the URL Vite prints (normally **http://127.0.0.1:5173**) and start the game. The playground in `playground/` is a fictional test page; it does not ship in the package. It runs from a standalone clone.
 
 ## Play
 
@@ -44,7 +44,6 @@ const game = createShermanBytes({
   textSelector: "h1, h2, h3, p, li",
   targetSelector: "button, [data-base]",
   wallSelector: "[data-sherman-wall]",
-  binaryOpacity: 0.32,
   mode: "siege",
   fortifications: true,
 });
@@ -64,29 +63,30 @@ Hits replace characters in the existing DOM Text nodes with literal 0 or 1. Ther
 
 ## Performance and scope
 
-Strict TypeScript; one runtime frame loop; 32 pooled enemy tanks; 120 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
+Strict TypeScript; one Fizlet engine per run; the rules are one system on typed arrays (`src/world.ts`), so a step never allocates (tested: 20,000 busy steps, no minor GC) and the same seed with the same inputs replays the same run (tested); 32 pooled enemy tanks; 120 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
 
-`dist/index.js` and `dist/react.js` are each budgeted at 28 KB gzip; `npm run size` (`scripts/size.mjs`) fails the build above that. The budget is a checked ceiling, not a promised FPS. Run `npm run size` for actual measurements. The shared wave director caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
+`dist/index.js` is **32,606 B gzip** and budgeted at 33,000 B (`npm run size`, `scripts/size.mjs`, fails the build above that); 0.5.2 on the DOM VIRUS core was 26,994 B. The Board UI kit's CSS (keys, readouts, toast, touch pad: the family's one button language) is 3,060 B of it; the same build without that CSS is 29,546 B. The budget is a checked ceiling, not a promised FPS. The wave clock (`fizlet/rules` waves) caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
 
 ## Checks and releases
 
 ```sh
-npm run check            # typecheck, unit tests, build, package types
+npm run check            # typecheck, unit tests, build, package types, vendor check
 npm run size             # gzip sizes against the budget
+npm run test:browser     # the built package in Chromium (CHROMIUM_PATH picks a binary)
 npm run playground:build
 ```
 
 CI runs the same checks on every push and tags tested package versions as `vX.Y.Z`; existing tags are never moved. The DOM VIRUS hub pins those tags. Bump `package.json`, the lockfile version and `CHANGELOG.md` together for a release. The hub reads `site/game.json` from the pinned tag, or from a separately pinned content commit, so copy can change without a game release.
 
-## Shared engine provenance
+## Engine
 
-`shared/ORIGIN.json` records the built DOM VIRUS engine version and source fingerprint. Update through the hub’s selective synchronization scripts, then rebuild and test. Other game engines are unaffected by this repository.
+Sherman Bytes runs on [Fizlet](https://github.com/coded-dot-design/fizlet), the micro animation and game engine for the DOM. `src/world.ts` holds the rules; `src/game.ts` is the game's definition on `fizlet/arcade`, the shell shared with Null Invaders and Byte Runner (engine per run, page as the board, scoreboard, keys, touch pad, sound, sparks, popups and the controller). Waves, airdrops and score / XP are `fizlet/rules` bricks. `vendor/fizlet/` is a generated snapshot of Fizlet with its provenance in `vendor/fizlet/ORIGIN.json`; never edit it by hand: change Fizlet, then run `npm run sync` (from a sibling `fizlet` checkout) and rebuild.
 
 ## Inspiration
 
 [Original Macintosh Bolo manual](https://dialup.party/~jolo/bolo/guides/bolomanual/), Stuart Cheshire. Sherman Bytes is an independent coded.design project.
 
-Target beacons now attach to their actual elements. Native layout handles their scrolling, clipping and transforms. Mobile uses stationary rings and stable fills. See the [shared DOM ownership design](https://github.com/coded-dot-design/dom-virus/blob/main/docs/dom-ownership.md).
+A base's walls, its status and its capture progress are drawn in the button itself, and hard cover gets a dashed outline in place, so they follow the page's layout and scrolling natively. A base's health shows as a level inside the button and a beacon ring around it.
 
 ### Sound and controls
 

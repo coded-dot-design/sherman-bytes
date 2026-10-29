@@ -1,6 +1,6 @@
 {
   "name": "@coded-design/sherman-bytes",
-  "version": "0.5.2",
+  "version": "1.0.0",
   "type": "module",
   "description": "Sherman Bytes: Bolo-inspired tank combat across the DOM. By Chris Cooley / coded.design.",
   "license": "MIT",
@@ -36,13 +36,15 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --import tsx --test tests/*.test.mjs",
-    "check": "npm run typecheck && npm test && npm run build && npm run test:package",
+    "test": "node --expose-gc --import tsx --test --test-concurrency=1 tests/*.test.mjs",
+    "check": "npm run typecheck && npm test && npm run build && npm run test:package && node scripts/vendor-check.mjs",
     "playground:build": "vite build --config vite.config.js",
     "size": "node scripts/size.mjs",
     "typecheck": "tsc --noEmit",
     "test:package": "tsc -p tsconfig.package.json",
-    "dev:playground": "vite --config vite.config.js"
+    "dev:playground": "vite --config vite.config.js",
+    "test:browser": "node tests/browser.mjs",
+    "sync": "node scripts/sync.mjs"
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0"
@@ -55,6 +57,7 @@
   "devDependencies": {
     "@types/react": "19.3.0",
     "esbuild": "0.28.2",
+    "playwright": "1.58.2",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vite": "8.3.5"

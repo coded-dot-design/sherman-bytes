@@ -15,18 +15,9 @@
     "isolatedModules": true,
     "erasableSyntaxOnly": true,
     "noEmit": true,
-    "skipLibCheck": false,
-    "paths": {
-      "@coded-design/dom-virus": [
-        "./shared/types/index.d.ts"
-      ],
-      "@coded-design/dom-virus/react": [
-        "./shared/types/react.d.ts"
-      ]
-    }
+    "skipLibCheck": false
   },
   "include": [
-    "src/**/*.ts",
-    "tests/types.test.ts"
+    "src/**/*.ts"
   ]
 }
