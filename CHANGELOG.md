@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.0: on Fizlet
+
+The engine cut (DOM VIRUS ENGINE.md E3): Sherman Bytes runs on Fizlet 0.13.0 instead of the DOM VIRUS core snapshot. Same game, same numbers; the controller API (`createShermanBytes`, start/pause/resume/stop/destroy/getSnapshot) and the snapshot fields are unchanged.
+
+- **The rules are one Fizlet system** (`src/world.ts`), DOM-free, on typed arrays: tanks (yours is the last slot), shells, bases, walls and builds, hard cover. A step never allocates (tested: 20,000 busy steps with waves, builds, mines and pillboxes, no minor GC) and the same seed with the same inputs replays the same run (tested). The step queries the page through board-page's typed forms (`hitAt`, `nearAt`, new in Fizlet 0.13.0), because a number passed to a call V8 doesn't inline boxes.
+- **Bricks:** the wave clock and the airdrops are `fizlet/rules` `waves` and `drops` (the core's WaveDirector and SupplyDrops numbers; the wave clock still steps only in siege with bases on the page, and squads of up to three still rest between spawns); score, XP and the cannon tiers are `score` (levels at 20 and 60 XP).
+- **The shell is `fizlet/arcade`**, shared with Null Invaders and Byte Runner. Base walls, status and capture progress are drawn in the buttons and hard cover is outlined in place through the arcade's `attach` (ledger-owned: Recall removes them and puts the elements' style back). `src/game.ts` is only the game's definition.
+- **Scoreboard in the Board UI kit:** score, wave, armor and scrap (folded: score, armor, scrap), the cannon meter, the Cover / Pillbox / Mine keys and a comms toast for waves. The phone stick, Fire and build keys are the kit's pad.
+- **Tests:** 0.5.2's 25 simulation tests, ported to the world unchanged in what they check, plus determinism and zero allocation in Node; the built package in Chromium (bases and their walls, hard cover, firing into the page, driving, building, links and fields, pause, Recall restores the page byte for byte, frame time, game over, failed start, phone stick). CI runs on ubuntu-24.04.
+- **Removed:** `shared/` (the core snapshot), `src/simulation.ts`, `src/terrain.ts` and `src/base-presentation.ts` (now in `src/world.ts` and `src/game.ts`), and the `binaryStyle`, `binaryOpacity`, `targetEffects` and `document` options. Bases show their health as a level inside the button (the shell's paint: a full green button at full health) and a beacon ring.
+- **Size:** `dist/index.js` is 32,468 B gzip (budget 33,000 B); 0.5.2 was 26,994 B. The Board UI kit's CSS is 3,064 B of it: without it the build is 29,404 B (+2,410 B over 0.5.2: the typed-array rules are longer source than the object version, and the shared shell is general).
+
 ## 0.5.2
 
 Mobile: the arrow D-pad becomes the shared analog thumbstick (8-way drive, deadzone + hysteresis); Fire is Battlefield's round crosshair button and Cover, Pillbox and Mine are 3D arcade buttons that act on press. Drive and Fire can be held together. Uses the dom-virus engine 0.21.0 snapshot; the gzip budget grows by 2 KB for the shared controls.

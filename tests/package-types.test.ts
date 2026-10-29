@@ -3,7 +3,6 @@ import { ShermanBytes } from "@coded-design/sherman-bytes/react";
 const game = createShermanBytes({
   root: "main",
   wallSelector: "[data-wall]",
-  binaryOpacity: 0.32,
   mode: "siege",
   fortifications: true,
 });

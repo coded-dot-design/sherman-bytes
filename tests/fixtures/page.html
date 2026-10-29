@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sherman Bytes test page</title>
+<style>
+  :root { color-scheme: light dark }
+  body { font: 18px/1.6 system-ui; margin: 0; background: light-dark(#f0f3e9, #101514); color: light-dark(#18271c, #e1ebdb) }
+  main { max-width: 900px; margin: auto; padding: 40px 24px 300px }
+  h1 { font-size: 64px; line-height: 1.05; margin: 0 0 24px }
+  button { font: inherit; padding: 10px 20px; border-radius: 24px; border: 1px solid #8b9e82; background: light-dark(#dfe8d6, #1d2a26); color: inherit }
+  aside { border: 1px dashed #d8ad62; padding: 16px; margin: 24px 30%; font: 13px monospace }
+  .bar { position: sticky; top: 0; z-index: 1; padding: 12px 24px; background: light-dark(#f0f3e9, #101514) }
+</style>
+<div class="bar" data-virus-ignore><button id="start">Play</button><button id="stop">Recall</button></div>
+<main id="board">
+  <h1>Every page is a battlefield.</h1>
+  <p>Real words. Real buttons. A tiny tank war hiding in the document, with <a href="#away" id="link">a link</a> inside.</p>
+  <button id="alpha" style="color: rgb(1, 2, 3)">Outpost Alpha</button>
+  <aside data-sherman-wall>HARD COVER</aside>
+  <h2>Capture the ground.</h2>
+  <p>Disable a base with shellfire, then drive onto it to claim it. Captured bases repair your armor and fire at enemies.</p>
+  <button id="bravo">Outpost Bravo</button>
+  <form><p>Protected text in a form.</p><input id="field" placeholder="Typing stays yours" /></form>
+</main>
+<script type="module">
+  import { createShermanBytes } from "/dist/index.js";
+  const q = new URLSearchParams(location.search);
+  window.events = [];
+  window.launch = (extra = {}) => {
+    window.game?.destroy();
+    window.game = createShermanBytes({ root: "#board", seed: 11, sound: false, onEvent: (e) => window.events.push(e.type), ...(q.has("bare") ? { targetSelector: "[data-none]" } : {}), ...extra });
+    return window.game.start();
+  };
+  document.querySelector("#start").onclick = () => window.launch();
+  document.querySelector("#stop").onclick = () => window.game?.destroy();
+</script>
+</html>
