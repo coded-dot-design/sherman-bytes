@@ -106,7 +106,7 @@ test("a shell opens a crater, awards letters once, and advances the cannon", () 
   tick(20);
   assert.equal(board.spent.reduce((a, b) => a + b, 0), 24);
   assert.equal(snap(w).cannon, 2);
-  assert.equal(count(events, "level"), 1, "one cannon upgrade");
+  assert.equal(count(events, "cannon"), 1, "one cannon upgrade");
   assert.ok(snap(w).score >= 120);
   const xp = snap(w).xp;
   fire(false);

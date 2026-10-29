@@ -131,7 +131,7 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
         const targets = ctx.board.targets;
         // Hard cover: measured every 0.25 s (at once after a scroll), each wall marked once.
         let coverAt = -1;
-        const cover: Element[] = [], marked = new Set<Element>();
+        const cover: Element[] = [], marked = new Map<Element, Element | null>();
         function measureCover() {
           coverAt = ctx.engine.time + 0.25;
           cover.length = 0;
@@ -161,13 +161,16 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
         // ---------- Art ----------
         const sprite = tankSprites(doc);
         const kindName = (k: number) => Wd.KINDS[k]!.toUpperCase();
-        const views = new Map<Element, { state: string; walls: HTMLElement[]; status: HTMLElement; label: HTMLElement; progress: HTMLElement }>();
+        const views = new Map<Element, { host: Element; state: string; walls: HTMLElement[]; status: HTMLElement; label: HTMLElement; progress: HTMLElement }>();
+        const live = new Set<Element>();
         /** A base's walls, status and capture progress belong to the button itself (in-page art). */
         function drawBases() {
           const B = world.bases;
+          live.clear();
           for (let b = 0; b < B.count; b++) {
             const t = B.target[b] as BoardTarget | null;
             if (!t) continue;
+            live.add(t.el);
             let view = views.get(t.el);
             if (!view) {
               const shadow = ctx.attach(t.el);
@@ -176,7 +179,7 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
               box.setAttribute("data-sherman-base", "");
               box.innerHTML = `<style>${BASE_CSS}</style><div class="base"><i class="wall"></i><i class="wall"></i><i class="wall"></i><i class="wall"></i><div class="status"><span class="label"></span><i class="progress"></i></div></div>`;
               shadow.append(box);
-              view = { state: "", walls: [...box.querySelectorAll<HTMLElement>(".wall")], status: box.querySelector(".status")!, label: box.querySelector(".label")!, progress: box.querySelector(".progress")! };
+              view = { host: shadow.host, state: "", walls: [...box.querySelectorAll<HTMLElement>(".wall")], status: box.querySelector(".status")!, label: box.querySelector(".label")!, progress: box.querySelector(".progress")! };
               views.set(t.el, view);
             }
             const st = world.structures;
@@ -195,19 +198,23 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
             if (view.label.textContent !== label) view.label.textContent = label;
             view.progress.style.transform = `scaleX(${B.captured[b] ? 1 : Math.min(1, B.progress[b]! / 0.7)})`;
           }
+          // A button that is no longer a base (removed, or no longer matching) loses its walls and status.
+          for (const [el, view] of views) if (!live.has(el) || !el.isConnected) view.host.remove(), views.delete(el);
         }
         /** Hard cover gets a dashed outline, in the element itself. */
         function markCover() {
           for (const el of cover) {
             if (marked.has(el)) continue;
-            marked.add(el);
             const shadow = ctx.attach(el);
+            marked.set(el, shadow?.host ?? null);
             if (!shadow) continue;
             const marker = doc.createElement("i");
             marker.setAttribute("data-sherman-cover", "");
             marker.style.cssText = "position:absolute;inset:-2px;border:1px dashed #06c4ff;pointer-events:none;border-radius:inherit";
             shadow.append(marker);
           }
+          // An element that is no longer hard cover loses its outline.
+          for (const [el, host] of marked) if (!el.isConnected || !cover.includes(el)) host?.remove(), marked.delete(el);
         }
         function drawStructures(g: CanvasRenderingContext2D) {
           const k = world.structures, W = s[Wd.W]!, H = s[Wd.H]!;
@@ -295,8 +302,9 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
           g.restore();
         }
         const baseId = (b: number) => {
+          // As 0.5.2: the button's id, or gate-n (its place among the page's targets).
           const t = b >= 0 ? (world.bases.target[b] as BoardTarget | null) : null;
-          return t ? t.el.id || `base-${b + 1}` : "reinforcement";
+          return t ? t.el.id || `gate-${targets.indexOf(t)}` : "reinforcement";
         };
 
         return {
@@ -314,7 +322,7 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
             const T = world.tanks, x = T.x[Wd.P]!, y = T.y[Wd.P]!;
             switch (ev.type) {
               case "score": ctx.popup(ev.x, ev.y, ev.a, null, 0); break;
-              case "level": ctx.popup(x, y - 28, 0, `${cannonName(ev.a + 1)} ONLINE`, 1); ctx.emit("cannon-upgrade", { cannon: ev.a + 1, xp: world.points.xp }); break;
+              case "cannon": ctx.popup(x, y - 28, 0, `${cannonName(ev.a)} ONLINE`, 1); ctx.emit("cannon-upgrade", { cannon: ev.a, xp: ev.b }); break;
               case "say": {
                 const text = Wd.SAYS[ev.a]!.replace("#", ev.a === 4 || ev.a === 6 ? kindName(ev.b) : String(ev.b));
                 ctx.popup(ev.x, ev.y, 0, text, Wd.SAY_TONE[ev.a]! as 1 | 2);

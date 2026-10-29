@@ -188,7 +188,7 @@ export function createWorld(e: Engine, board: Board, ctl: Float64Array = new Flo
   function award(p: number, xp: number, x: number, y: number) {
     const before = points.level;
     points.add(p, xp, x, y);
-    if (points.level > before) (s[CANNON] = points.level + 1), (tfire[P] = 0);
+    if (points.level > before) (s[CANNON] = points.level + 1), (tfire[P] = 0), e.events.emit("cannon", s[CANNON]!, points.xp);
   }
   function consume(g: number, credited: boolean) {
     const x = board.glyphs.x[g]!, y = board.glyphs.y[g]!;
@@ -378,9 +378,8 @@ export function createWorld(e: Engine, board: Board, ctl: Float64Array = new Flo
       s[BUILD] = 0;
       const l = s[BL]!, t = s[BT]!, r = s[BR]!, b = s[BB]!;
       if (clearBuildSite(l, t, r, b)) {
-        addStructure(kind, l, t, r, b, kind === COVER ? 110 : kind === PILLBOX ? 100 : 1, NONE, 0, 0.3, ttur[P]!);
-        say(6, (l + r) / 2, (t + b) / 2, kind);
-        e.events.emit("structure-built", kind, 0, (l + r) / 2, (t + b) / 2);
+        if (addStructure(kind, l, t, r, b, kind === COVER ? 110 : kind === PILLBOX ? 100 : 1, NONE, 0, 0.3, ttur[P]!) < 0) salvage(s[BCOST]!), say(7, tx[P]!, ty[P]! - 28);
+        else say(6, (l + r) / 2, (t + b) / 2, kind), e.events.emit("structure-built", kind, 0, (l + r) / 2, (t + b) / 2);
       } else salvage(s[BCOST]!), say(7, tx[P]!, ty[P]! - 28);
     }
     for (let k = 0; k < n[KN]!; k++) {
@@ -490,8 +489,7 @@ export function createWorld(e: Engine, board: Board, ctl: Float64Array = new Flo
           if (t.hp === 0) say(0, x, y), e.events.emit("base-disabled", which, 0, x, y);
         }
         burst(x, y, sfriend[i] ? C_SHELL : C_ENEMY, 5);
-        // A mine's blast may have removed shells: this one is still at i only if i is still live.
-        if (i < n[SN]!) removeShell(i);
+        removeShell(i);
       } else if (slife[i]! <= 0 || x1 < -50 || x1 > s[W]! + 50 || y1 < -50 || y1 > s[H]! + 50) removeShell(i);
     }
   }
