@@ -5,7 +5,8 @@
 // scoreboard, keys, touch pad, sound, sparks, popups, the controller the DOM VIRUS hub drives) is
 // fizlet/arcade; the rules are ./world. This file is the game's definition: the read-phase page work
 // (hard cover, bases), its scoreboard, how it reacts to what happens, and its art.
-import { arcade, CALM, PON, PX, PY, TARGET_HP, VH, VW } from "../vendor/fizlet/arcade";
+import { arcade, arcadeHud, CALM, PON, PX, PY, TARGET_HP, VH, VW, type ArcadeHud } from "../vendor/fizlet/arcade";
+import { announcer, type Announcer } from "./announce.js";
 import type { BoardTarget } from "../vendor/fizlet/board-page";
 import { BASE_HEALTH, COLORS, cannonName } from "./rules.js";
 import { tankSprites } from "./sprites.js";
@@ -101,6 +102,50 @@ const BASE_CSS =
   '.base{position:absolute;inset:0;pointer-events:none}.wall{position:absolute;background:#321126;border:1px solid #ee6875;box-sizing:border-box}.wall:nth-child(1){left:-12px;right:-12px;top:-17px;height:10px}.wall:nth-child(2){left:-12px;right:-12px;bottom:-17px;height:10px}.wall:nth-child(3){top:-7px;bottom:-7px;left:-17px;width:10px}.wall:nth-child(4){top:-7px;bottom:-7px;right:-17px;width:10px}.wall::after{content:"";position:absolute;left:0;bottom:-5px;width:100%;height:3px;background:#ee6875;transform:scaleX(var(--health,1));transform-origin:left}.status{position:absolute;inset:-4px;border:2px solid currentColor;color:#06c4ff}.status[data-captured=true]{color:#4bce82}.label{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;font:bold 10px monospace;background:#151020;padding:2px 4px;color:inherit}.progress{position:absolute;top:calc(100% + 5px);left:0;width:100%;height:3px;background:currentColor;transform-origin:left}.status[data-captured=true] .progress{left:calc(50% - 5px);width:10px;height:10px;clip-path:polygon(30% 0,70% 0,70% 30%,100% 30%,100% 70%,70% 70%,70% 100%,30% 100%,30% 70%,0 70%,0 30%,30% 30%)}';
 
 export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBytesController {
+  // Accessible play: the arcade scoreboard, plus focus that lands somewhere sensible and one polite
+  // live region (./announce) for score, armor, waves, pause and the result. Lives as long as the overlay.
+  let voice: Announcer | null = null;
+  const preset = arcadeHud();
+  const hud: ArcadeHud = {
+    css: preset.css + ".ar:focus-visible{outline:3px solid var(--k-sys);outline-offset:3px}",
+    mount(r) {
+      const v = preset.mount(r), doc = document, host = (r.ui.getRootNode() as ShadowRoot).host;
+      const panel = r.ui.querySelector<HTMLElement>(".ar")!, opener = doc.activeElement;
+      const a = (voice = announcer({ doc }));
+      const away = () => doc.activeElement === doc.body || doc.activeElement === host;
+      let was = "";
+      v.msg.removeAttribute("role"); // the toast is seen; the announcer is the one live region
+      // Focus starts on the scoreboard (Tab reaches its keys), unless a field has it.
+      panel.tabIndex = -1;
+      if (!opener?.closest("input,textarea,select,[contenteditable]")) panel.focus({ preventScroll: true });
+      r.signal.addEventListener("abort", () => {
+        a.destroy();
+        if (voice === a) voice = null;
+        if (away() && opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
+      });
+      return {
+        ...v,
+        sync() {
+          v.sync();
+          const s = r.status();
+          if (s === "paused") a.say("status", "Paused");
+          else if (s === "running" && s !== was) a.say("status", was === "paused" ? "Resumed" : "Game started. Arrows drive, Space fires, P pauses, Escape exits");
+          was = s;
+        },
+        key(k, b, auto) {
+          v.key(k, b, auto);
+          // A key pressed mid-run is blurred (Space fires, never presses it): keep focus on the board.
+          queueMicrotask(() => r.status() === "running" && doc.activeElement === doc.body && panel.focus({ preventScroll: true }));
+        },
+        end(won, notice, stats) {
+          v.end(won, notice, stats);
+          a.say("status", `${won ? "Stage clear" : "Game over"}. Final score ${stats.score}. ${notice}`);
+          a.flush();
+          if (away()) r.ui.querySelector<HTMLElement>("[data-a=restart]")?.focus();
+        },
+      };
+    },
+  };
   return arcade<ShermanBytesStats>(
     {
       id: "sherman-bytes",
@@ -109,6 +154,7 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
       hint: "WASD / arrows: drive · Mouse: aim · Space: fire · B: cover · T: pillbox · M: mine",
       touchHint: "Drag the stick to drive · hold the target key to fire",
       css: __KIT_CSS__,
+      hud,
       fire: true,
       actions: [
         { id: "cover", key: "KeyB", label: "B · Cover 2" },
@@ -129,6 +175,7 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
         const world = Wd.createWorld(ctx.engine, ctx.board, ctx.ctl, ctx.input, options);
         const { s, ctl } = world;
         const targets = ctx.board.targets;
+        const say = voice!, said = new Float64Array(2).fill(-1); // the score and armor quarter last announced
         // Hard cover: measured every 0.25 s (at once after a scroll), each wall marked once.
         let coverAt = -1;
         const cover: Element[] = [], marked = new Map<Element, Element | null>();
@@ -339,8 +386,8 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
               case "structure-built": ctx.emit("structure-built", { kind: Wd.KINDS[ev.a], x: ev.x, y: ev.y }); break;
               case "mine-detonated": ctx.emit("mine-detonated", {}); break;
               case "fire": ctx.emit("fire"); break;
-              case "wave:start": ctx.popup(x, y - 40, 0, `WAVE ${ev.a} / INCOMING`, 2); ctx.say(`WAVE ${ev.a} · ${ev.b} tanks incoming`); ctx.emit("wave-start", { wave: ev.a }); break;
-              case "wave:clear": ctx.popup(x, y - 40, 0, "WAVE CLEAR / FORTIFY", 1); ctx.say("Wave clear · +4 scrap, +12 armor · fortify"); ctx.emit("wave-clear", { wave: ev.a }); break;
+              case "wave:start": ctx.popup(x, y - 40, 0, `WAVE ${ev.a} / INCOMING`, 2); ctx.say(`WAVE ${ev.a} · ${ev.b} tanks incoming`); say.say("wave", `Wave ${ev.a}: ${ev.b} tanks incoming`); ctx.emit("wave-start", { wave: ev.a }); break;
+              case "wave:clear": ctx.popup(x, y - 40, 0, "WAVE CLEAR / FORTIFY", 1); ctx.say("Wave clear · +4 scrap, +12 armor · fortify"); say.say("wave", `Wave ${ev.a} clear. Fortify`); ctx.emit("wave-clear", { wave: ev.a }); break;
               case "drop:spawn": ctx.emit("supply-drop", { kind: ev.a ? "repair" : "scrap" }); break;
               case "drop:collect": ctx.emit("supply-collected", { kind: ev.a ? "repair" : "scrap" }); break;
             }
@@ -378,9 +425,19 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
             g.restore();
           },
           hud(out) {
-            out[0] = world.points.points;
+            const score = world.points.points, armor = Math.ceil(world.tanks.hp[Wd.P]!), quarter = Math.ceil(armor / 25);
+            out[0] = score;
             out[1] = world.siege ? world.wave.wave : 1;
-            out[2] = Math.ceil(world.tanks.hp[Wd.P]!);
+            out[2] = armor;
+            // Changes only (the render's change-only HUD write): a string is made only when one is said.
+            if (said[0] !== score) {
+              if (said[0]! >= 0) say.say("score", `Score ${score}`);
+              said[0] = score;
+            }
+            if (said[1] !== quarter) {
+              if (said[1]! >= 0) say.say("lives", `Armor ${armor}%`);
+              said[1] = quarter;
+            }
             out[3] = s[Wd.SCRAP]!;
             out[4] = world.points.xp * 4 + s[Wd.CANNON]!; // the meter's change key
           },

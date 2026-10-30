@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+Accessible play (roadmap E14). Same game and rules: no gameplay change, the vendored Fizlet is untouched.
+
+- **Keyboard only, end to end.** Start, drive, aim (until the mouse moves, the turret follows the hull: turn to aim, hold Space to fire), build, pause, Recall, Restart and the scoreboard's keys all work from the keyboard. Focus moves to the scoreboard when a run starts (Tab reaches its keys; the scoreboard shows a focus ring), stays on the scoreboard after a key is pressed mid-run (it was dropped to the page), moves to Restart when the run ends and returns to where it was (the Play key) on Recall. No keyboard trap: Tab leaves the scoreboard for the page. Keys are listed in the README ("Keys") and in `site/game.json`'s controls.
+- **Screen-reader announcements** through one polite live region (`[data-fz-announce]`, `role="status"`, `aria-atomic`, visually hidden), at most one write a second: score (coalesced to the latest), armor (when it crosses a quarter), waves, start, pause / resume, and the result (written at once). `src/announce.ts` is a local copy of the `fizlet/announce` contract (the brick is proposed upstream; a later sync swaps the import). It is called from the HUD's change-only write and the scoreboard's status hooks, never from the simulation step, and allocates nothing when nothing changed. The comms toast is no longer a second live region; the playground's status line is no longer one either (it changed every 0.1 s).
+- **axe-core 4.14.0:** zero serious or critical violations on the test page and the playground, light and dark, idle, running, paused, at game over and after Recall. Before: the test page had one serious `color-contrast` in dark mode (its Outpost Alpha's inline text colour; now `light-dark()`, still inline, so Recall still has to restore it), and the playground a moderate `landmark-unique` while running (its nav now has a label).
+- **Tests:** the announcer's contract in Node (region attributes, coalescing, rate limit, re-announcing the same text, destroy); in Chromium, a keyboard-only run (focus, keyboard aim, Tab / Enter on the scoreboard, pause, Recall returns focus) and the game announcing score, armor, waves and game over.
+- **Size:** `dist/index.js` is 34,401 B gzip (1.0.1: 33,601 B, +800 B): the announcer and the scoreboard's focus / announcement wrapper. The budget moves from 34,000 to 34,800 B.
+
 ## 1.0.1
 
 On Fizlet 0.19.0 (was 0.13.0). Same game and rules: the vendored engine is the only code change.
