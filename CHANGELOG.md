@@ -2,12 +2,12 @@
 
 ## Unreleased
 
-Still on Fizlet 0.19.0. Same game and rules (`src/world.ts` is unchanged); the scoreboard moves to the Board UI layer's standard, Battlefield Blitz's bar.
+On a pre-release Fizlet snapshot for testing (`vendor/fizlet` at coded-dot-design/fizlet#116, `629b7f2`, still labelled 0.19.0): **re-vendor from the Fizlet release before this ships** (`node scripts/sync.mjs` with ../fizlet at the release tag). Same game and rules (`src/world.ts` is unchanged); the scoreboard moves to the Board UI layer's standard, Battlefield Blitz's bar.
 
 - **The scoreboard is fizlet/arcade's `skirmishHud` preset** (values through `fizlet/hud`: change-only, from typed-array slots). A bar across the top: score, wave, an **armor bar** that turns red at 30 %, scrap and a **cannon bar** (progress to the next tier; the "MK … ONLINE" popup still names it), the Cover / Pillbox / Mine keys, full screen, sound, pause and Recall. On phones it wraps to two rows; the pad is unchanged.
 - **The run's flow is the kit's overlays:** GET READY 3, 2, 1 before the engine starts (the run's clock waits too, so waves come at the same game time); pause shows BATTLE PAUSED / GIVE UP? with KEEP FIGHTING and SURRENDER; the end shows STAGE CLEAR / MISSION COMPLETE or INSERT COIN / GAME OVER with score, wave, kills, bases captured and the best score on this device, and REMATCH / EXIT.
-- **Gone with the old card:** the fold key, the Restart, Next gate and Auto fire keys (G still jumps to the next base; hold Space or the mouse, or the pad's Fire, to fire; restart from the result card), and the zero-padded score.
-- **Size:** `dist/index.js` is 38,346 B gzip (1.0.1: 33,601 B, +4,745 B): the skirmish preset and `fizlet/hud` (Fizlet's own measure: +4,012 B over the card build) and the kit's sticker-key and overlay CSS (sections 4 and 5, +800 B). The budget moves from 34,000 to 39,000 B.
+- **No control is lost:** the bar keeps the card's **Auto fire**, **Next gate** (G) and **Restart** keys (skirmishHud's `nav`). The run's flow is `fizlet/match`: the countdown runs on its clock, a hidden tab pauses with BATTLE PAUSED, surrender waves the white flag, and the result stays up after the run (the page is already back) until REMATCH, EXIT or Escape. Gone with the old card: the fold key (the bar has no meter to fold) and the zero-padded score.
+- **Size:** `dist/index.js` is 40,459 B gzip (1.0.1: 33,601 B, +6,858 B): the skirmish preset and `fizlet/hud` (+3,945 B), `fizlet/match` for the flow and the bar's three keys (+2,113 B; Fizlet's own measure for match in arcade: +2,015 B) and the kit's sticker-key and overlay CSS (sections 4 and 5, +800 B). The budget moves from 34,000 to 41,000 B.
 - **Tests:** the browser test checks the countdown holds the start and the run's clock, and waits for it before driving; the 27 Node tests (determinism, zero allocation) are unchanged and pass.
 
 ## 1.0.1

@@ -116,9 +116,11 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
       ],
       // The scoreboard is Battlefield Blitz's bar (fizlet/arcade's skirmish preset, values through
       // fizlet/hud): score, wave, an armor bar that goes red at 30 %, scrap and the cannon's
-      // progress to its next tier; GET READY 3-2-1, pause / surrender and the result card.
+      // progress to its next tier; GET READY 3-2-1, pause / surrender and the result card (the flow
+      // is fizlet/match). The card's Auto fire, Next gate and Restart keys stay on the bar.
       hud: skirmishHud({
         readouts: [{ label: "Score", tone: "team" }, { label: "Wave" }, { label: "Armor", kind: "bar", low: 0.3 }, { label: "Scrap" }, { label: "Cannon", kind: "bar" }],
+        nav: ["auto", "next", "restart"],
         result: { stats: ["score", "wave", "kills", "captured"], best: "score" },
       }),
       colors: [COLORS.player, COLORS.enemy, COLORS.heavy, COLORS.shell],

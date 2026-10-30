@@ -2,19 +2,19 @@
   "note": "Generated snapshot. Edit coded-dot-design/fizlet, then run node scripts/sync.mjs.",
   "repository": "https://github.com/coded-dot-design/fizlet",
   "version": "0.19.0",
-  "commit": "7408af47af2c5bdd42b1159421b3a4b42650d6ae",
+  "commit": "629b7f2bccb67ca67c63dc064bfefae9db815d10",
   "files": [
     {
       "path": "arcade-parts.ts",
-      "sha256": "2c36d9775bd06ca44ee38ec477e96dd32646e79a3fe214d80f21426d7c02e28b"
+      "sha256": "1ce7698f2ac96596d9f737356ccb61ef0817a6a9956a52111355b040f4d18a9d"
     },
     {
       "path": "arcade-skirmish.ts",
-      "sha256": "9009075b61943a50d39c3b9ae5c2585b31f82a7142eabebb5da8db054e02a980"
+      "sha256": "3b6b17c0ef08af164ac144f2067664c98585a476ca74893714f55c01b63a21ab"
     },
     {
       "path": "arcade.ts",
-      "sha256": "7476cb63e4229958720cdd7f0cedaaea22fd4d4d72db8c783e4cc32f7c217d80"
+      "sha256": "e150ec71ccb232052b6e788dd689cf370da68243dd919063909138d52b5bdddb"
     },
     {
       "path": "board-page.ts",
@@ -26,7 +26,7 @@
     },
     {
       "path": "coach.ts",
-      "sha256": "1e0b31d43ae3530c11b41c85e30949204af738e380ed656338da47c1d270586d"
+      "sha256": "8827f28a5e51b4fc6973832f76b7ba81c1ed027fd7c66632e01adb5fe98f3a23"
     },
     {
       "path": "collide.ts",
@@ -90,7 +90,7 @@
     },
     {
       "path": "match.ts",
-      "sha256": "9f0b77706ea07144117a0e62a47e1d32bca5150f17beb289ee73d08e2c897ce6"
+      "sha256": "262c5e915b60e8ec3bea0c46364d75d6b1cbc4cc1a4b64677e0283c84e92f7cf"
     },
     {
       "path": "pad.ts",
@@ -114,7 +114,7 @@
     },
     {
       "path": "slot.ts",
-      "sha256": "73dc55c7ecda227b8d04807466723cfeb728e04771e701938d839506d73d2775"
+      "sha256": "477e506f06dcaa57a0b25afe86bcd8e6f8afe58ab89606966f3db62e201362f8"
     },
     {
       "path": "sound.ts",
@@ -138,7 +138,7 @@
     },
     {
       "path": "ui/board-ui.ts",
-      "sha256": "8718ae7038d18e56637bd55169f4fcd91167e70a3b7f3c37d2692daf0f862e66"
+      "sha256": "aff234dee4004fe07c0c3e39c7ebd5f20b5edf3f116668ba70910df0d78c1b33"
     },
     {
       "path": "ui/tokens.json",
