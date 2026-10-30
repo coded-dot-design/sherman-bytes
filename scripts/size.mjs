@@ -6,8 +6,8 @@
 // is the preset and fizlet/hud (Fizlet's sizes.mjs: skirmish is +4,012 B over the card build) and
 // 800 B is the kit's sticker-key and overlay CSS (sections 4 and 5). On the fizlet#116 snapshot
 // (the flow on fizlet/match, Auto fire / Next gate / Restart on the bar): 40,459 B, +2,113 B, of
-// which match is +2,015 B (Fizlet's sizes.mjs, arcade). Budget 39,000 → 41,000; re-measure after
-// re-vendoring the release.
+// which match is +2,015 B (Fizlet's sizes.mjs, arcade). Budget 39,000 → 41,000. Re-vendored from the
+// Fizlet 0.20.0 release (bf42a8c): 40,856 B (+397 B: fizlet/touch, the kit's touch CSS, the exact hypot).
 import { readFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 const BUDGET = 41000;
