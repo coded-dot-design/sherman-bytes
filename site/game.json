@@ -14,7 +14,7 @@
     "Click / Space — fire; keyboard-only aiming follows the hull",
     "B — cover (2 scrap) · T — pillbox (8) · M — mine (3)",
     "P — pause · G — next hostile base · Esc — Recall",
-    "Scoreboard: sound · pause / resume · minimize · Recall",
+    "Scoreboard: full screen · sound · pause / resume (keep fighting or surrender) · Recall",
     "On mobile: joystick to drive, hold Fire; tap Cover, Pillbox or Mine to build"
   ],
   "facts": [

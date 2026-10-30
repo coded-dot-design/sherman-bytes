@@ -5,7 +5,7 @@
 // scoreboard, keys, touch pad, sound, sparks, popups, the controller the DOM VIRUS hub drives) is
 // fizlet/arcade; the rules are ./world. This file is the game's definition: the read-phase page work
 // (hard cover, bases), its scoreboard, how it reacts to what happens, and its art.
-import { arcade, CALM, PON, PX, PY, TARGET_HP, VH, VW } from "../vendor/fizlet/arcade";
+import { arcade, CALM, PON, PX, PY, skirmishHud, TARGET_HP, VH, VW } from "../vendor/fizlet/arcade";
 import type { BoardTarget } from "../vendor/fizlet/board-page";
 import { BASE_HEALTH, COLORS, cannonName } from "./rules.js";
 import { tankSprites } from "./sprites.js";
@@ -94,7 +94,6 @@ export interface ShermanBytesController {
   getSnapshot(): ShermanBytesSnapshot;
 }
 
-const pad = (n: number, k: number) => String(n).padStart(k, "0");
 /** Never hard cover: fields, opted-out parts and the game's own overlay. */
 const NOT_COVER = "form,input,textarea,select,[contenteditable],[data-virus-ignore],[data-fizlet-ignore],[data-fizlet-host],[data-dom-virus-root],[data-swarm-ui]";
 const BASE_CSS =
@@ -115,9 +114,15 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
         { id: "pillbox", key: "KeyT", label: "T · Pillbox 8" },
         { id: "mine", key: "KeyM", label: "M · Mine 3" },
       ],
-      // Folded (phones), the scoreboard keeps score, armor and scrap.
-      readouts: [["Score", "team", (v) => pad(v, 6)], ["Wave", undefined, (v) => pad(v, 2), true], ["Armor", undefined, (v) => `${v}%`], ["Scrap"]],
-      meter: { label: "Cannon upgrade progress" },
+      // The scoreboard is Battlefield Blitz's bar (fizlet/arcade's skirmish preset, values through
+      // fizlet/hud): score, wave, an armor bar that goes red at 30 %, scrap and the cannon's
+      // progress to its next tier; GET READY 3-2-1, pause / surrender and the result card (the flow
+      // is fizlet/match). The card's Auto fire, Next gate and Restart keys stay on the bar.
+      hud: skirmishHud({
+        readouts: [{ label: "Score", tone: "team" }, { label: "Wave" }, { label: "Armor", kind: "bar", low: 0.3 }, { label: "Scrap" }, { label: "Cannon", kind: "bar" }],
+        nav: ["auto", "next", "restart"],
+        result: { stats: ["score", "wave", "kills", "captured"], best: "score" },
+      }),
       colors: [COLORS.player, COLORS.enemy, COLORS.heavy, COLORS.shell],
       cues: { fire: "fire", "tank-destroyed": "boom", "mine-detonated": "boom", "base-disabled": "hit", hurt: "hurt", "wave:start": "ready", "wave:clear": "win", "drop:collect": "power", "base-captured": "power", level: "power", "build-start": "click", "structure-built": "click" },
       create(ctx) {
@@ -378,15 +383,12 @@ export function createShermanBytes(options: ShermanBytesOptions = {}): ShermanBy
             g.restore();
           },
           hud(out) {
+            const c = s[Wd.CANNON]!;
             out[0] = world.points.points;
             out[1] = world.siege ? world.wave.wave : 1;
-            out[2] = Math.ceil(world.tanks.hp[Wd.P]!);
+            out[2] = Math.ceil(world.tanks.hp[Wd.P]!) / 100;
             out[3] = s[Wd.SCRAP]!;
-            out[4] = world.points.xp * 4 + s[Wd.CANNON]!; // the meter's change key
-          },
-          meter() {
-            const c = s[Wd.CANNON]!, xp = world.points.xp, next = c === 1 ? 20 : 60;
-            return [cannonName(c), c === 3 ? "FULL FIREPOWER" : `${xp}/${next} XP`, c === 3 ? 1 : xp / next] as const;
+            out[4] = c === 3 ? 1 : world.points.xp / (c === 1 ? 20 : 60); // to the next cannon tier
           },
           stats() {
             const T = world.tanks, k = world.structures, B = world.bases, hp = T.hp[Wd.P]!, w = world.wave;

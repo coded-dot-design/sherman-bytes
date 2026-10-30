@@ -23,6 +23,8 @@ const url = `http://127.0.0.1:${server.address().port}/`;
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 const snapshot = (page) => page.evaluate(() => document.documentElement.outerHTML);
 const state = (page) => page.evaluate(() => window.game.getSnapshot());
+// The skirmish bar holds the start for GET READY 3, 2, 1; the engine (and the run's clock) starts after.
+const ready = (page) => page.waitForFunction(() => window.game.getSnapshot().elapsed > 0);
 let where = "start";
 try {
   where = "play and recall";
@@ -34,18 +36,26 @@ try {
   await page.evaluate(() => window.launch());
   let s = await state(page);
   assert.equal(s.status, "running");
+  assert.match(await page.locator("[data-fizlet-host=sherman-bytes]").evaluate((h) => h.shadowRoot.querySelector(".bui-sticker").textContent), /GET READY3/, "the countdown holds the start");
+  assert.equal(s.elapsed, 0, "the run's clock waits for the countdown");
+  await ready(page);
   assert.equal(await page.locator("[data-fizlet-host=sherman-bytes]").count(), 1, "the scoreboard is on the page");
+  // No control lost with the card: Auto fire, Next gate and Restart are on the bar.
+  const bar = (fn) => page.locator("[data-fizlet-host=sherman-bytes]").evaluate((h, f) => new Function("r", `return (${f})(r)`)(h.shadowRoot), fn.toString());
+  assert.deepEqual(await bar((r) => ["auto", "gate", "restart"].map((a) => r.querySelector(`.sk [data-a=${a}]`)?.textContent ?? null)), ["Auto fire", "Next gate", "Restart"]);
   assert.equal(s.bases, 2, "the page's two buttons are bases");
   assert.equal(s.barriers, 8, "each base has four walls");
   assert.equal(s.armor, 100);
   // The walls are drawn in the buttons themselves; hard cover is outlined in place.
   await page.waitForFunction(() => document.querySelectorAll("#alpha > [data-fizlet-host=sherman-bytes-art], aside > [data-fizlet-host=sherman-bytes-art]").length === 2);
-  // Aim up at the heading and fire: letters turn into bits, points come in.
+  // Aim up at the heading and fire with the bar's Auto fire (no key held): letters turn into bits,
+  // points come in.
   const p = s.player;
   await page.mouse.move(p.x, 60);
-  await page.keyboard.down("Space");
+  await bar((r) => r.querySelector("[data-a=auto]").click());
+  assert.equal(await bar((r) => r.querySelector("[data-a=auto]").getAttribute("aria-pressed")), "true", "Auto fire on");
   await page.waitForTimeout(2000);
-  await page.keyboard.up("Space");
+  await bar((r) => r.querySelector("[data-a=auto]").click());
   s = await state(page);
   assert.ok(s.score > 0 && s.xp > 0, `scored (${s.score})`);
   assert.match(await page.locator("#board").innerText(), /[01]/, "letters became bits");
@@ -93,6 +103,7 @@ try {
 
   where = "frame time";
   await page.evaluate(() => window.launch());
+  await ready(page);
   await page.mouse.move(640, 200);
   await page.keyboard.down("Space");
   await page.waitForTimeout(6000);
@@ -137,6 +148,7 @@ try {
   const pp = await phone.newPage();
   await pp.goto(url + "?bare");
   await pp.evaluate(() => window.launch());
+  await ready(pp);
   const stick = await pp.evaluate(() => {
     const r = document.querySelector("[data-fizlet-host=sherman-bytes]").shadowRoot.querySelector(".bui-stick").getBoundingClientRect();
     return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
