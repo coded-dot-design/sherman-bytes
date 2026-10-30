@@ -29,8 +29,9 @@ interface Entry {
 }
 
 let probe: HTMLElement | undefined;
-/** How the browser normalises a style attribute's text (to check a restore is a no-op change). */
-const withStyle = (text: string) => ((probe ??= document.createElement("i")).setAttribute("style", text), probe.style.cssText);
+/** How the browser normalises a style attribute's text (to check a restore is a no-op change). The
+ *  probe comes from the element's own document (an iframe's page has no global `document` of its own). */
+const withStyle = (text: string, el: El) => ((probe ??= el.ownerDocument.createElement("i")).setAttribute("style", text), probe.style.cssText);
 
 export class Ledger {
   private readonly texts = new Map<CharacterData, Rec<string | null>>();
@@ -65,6 +66,18 @@ export class Ledger {
     s.setProperty(prop, value, priority);
     r.l = s.getPropertyValue(prop);
     r.lp = s.getPropertyPriority(prop);
+    return true;
+  }
+
+  /** Put one style property back now (as Recall would) and forget it: a later `style` records the
+   *  value then in place as the new original. Hands off if the host changed it since our last write. */
+  unstyle(el: El, prop: string): boolean {
+    const r = this.els.get(el)?.style?.get(prop), s = el.style;
+    if (!r) return true;
+    if (r.x || s.getPropertyValue(prop) !== r.l || s.getPropertyPriority(prop) !== r.lp) return !(r.x = true);
+    if (r.o) s.setProperty(prop, r.o, r.op);
+    else s.removeProperty(prop);
+    this.els.get(el)!.style!.delete(prop);
     return true;
   }
 
@@ -122,7 +135,7 @@ export class Ledger {
         else s.removeProperty(prop);
       });
       // Still ours end to end: put the original attribute text back byte for byte.
-      if (e.style && all && e.os !== null && el.style.cssText === withStyle(e.os)) el.setAttribute("style", e.os);
+      if (e.style && all && e.os !== null && el.style.cssText === withStyle(e.os, el)) el.setAttribute("style", e.os);
       if (e.style && !e.hadStyle && !el.getAttribute("style")) el.removeAttribute("style");
       if (e.cls && !e.hadClass && el.getAttribute("class") === "") el.removeAttribute("class");
     }
