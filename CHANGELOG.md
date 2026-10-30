@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
 On Fizlet 0.20.0 (was 0.19.0; `vendor/fizlet` from the v0.20.0 release, `bf42a8c`). Same game and rules (`src/world.ts` is unchanged); the scoreboard moves to the Board UI layer's standard, Battlefield Blitz's bar.
 
