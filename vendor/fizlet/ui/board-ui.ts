@@ -103,6 +103,26 @@ export function press(el: HTMLElement, fn: () => void, signal: AbortSignal) {
   }, { signal });
 }
 
+/**
+ * The press cue for page keys (`.bui-key`, links and buttons) under `root`. Mouse and touch press
+ * through CSS `:active`; this adds the rest: keyboard Enter (and Space on a button) shows the
+ * pressed face (`.down`) until the key is released or loses focus, and one passive touchstart
+ * listener lets iOS Safari apply `:active` at all. Activation stays native (click, navigation).
+ */
+export function pressCue(root: HTMLElement | Document, signal?: AbortSignal) {
+  const key = (e: Event) => (e.target as Element | null)?.closest?.(".bui-key");
+  // An undefined signal is fine at runtime; the casts keep games on exactOptionalPropertyTypes compiling.
+  const on = { signal } as AddEventListenerOptions;
+  root.addEventListener("touchstart", () => {}, { passive: true, signal } as AddEventListenerOptions);
+  root.addEventListener("keydown", (e) => {
+    const k = key(e), code = (e as KeyboardEvent).key;
+    if (k && (code === "Enter" || (code === " " && k.tagName === "BUTTON"))) k.classList.add("down");
+  }, on);
+  const up = (e: Event) => key(e)?.classList.remove("down");
+  root.addEventListener("keyup", up, on);
+  root.addEventListener("focusout", up, on);
+}
+
 /** localStorage key of the Settings "Performance overlay" switch (off by default). */
 export const PERF_KEY = "dom-virus:perf";
 /**

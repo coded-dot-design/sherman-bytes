@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.1
+
+On Fizlet 0.19.0 (was 0.13.0). Same game and rules: the vendored engine is the only code change.
+
+- **Fixed: the game draws in the right place on 2× and zoomed screens** (Fizlet 0.18.0). The arcade canvas now fills the overlay with CSS (`width:100%;height:100%`); before, it had no CSS size, so on a 1.5× or 2× screen the tank, enemies, shells and the bases' beacon rings drew 1.5–2× too big and away from the page targets (the tank started off screen and enemies fired at empty space). Checked in Chromium at deviceScaleFactor 2 (1280 × 800): the canvas is 1280 × 800 CSS px over its 1920 × 1200 backing store (was 1920 × 1200 CSS px), and the art sits on the player's position and around the first target button (was none there).
+- **The scoreboard drags** (Fizlet 0.19.0, fizlet#70): grab the card anywhere that isn't a key, with mouse or touch; it stays inside the window, also when the window shrinks. Checked in Chromium: dragged 400 px left and 300 px up, flung past the edges and resized to 700 × 500, it stayed fully on screen.
+- **Also from Fizlet 0.14–0.19:** the kit's key labels pass WCAG AA in both themes (token contrast), and a capped engine caps its animation frames, not just its work. Strict `exactOptionalPropertyTypes` typecheck passes.
+- **Size:** `dist/index.js` is 33,601 B gzip (1.0.0 was 32,606 B, +995 B): the engine's shell grew (the HUD preset contract, the drag, the kernel's frame cap) and the Board UI kit's CSS with it. Without the kit's CSS the build is 30,312 B (1.0.0: 29,491 B). The budget moves from 33,000 to 34,000 B.
+
 ## 1.0.0: on Fizlet
 
 The engine cut (DOM VIRUS ENGINE.md E3): Sherman Bytes runs on Fizlet 0.13.0 instead of the DOM VIRUS core snapshot. Same game, same numbers; the controller API (`createShermanBytes`, start/pause/resume/stop/destroy/getSnapshot) and the snapshot fields are unchanged.
