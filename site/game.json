@@ -11,10 +11,11 @@
   "versionNote": "Breach. Build. Hold the page.",
   "controls": [
     "WASD / arrows — drive; mouse — aim the turret",
-    "Click / Space — fire; keyboard-only aiming follows the hull",
+    "Keyboard only: the turret follows the hull — turn to aim, hold Space to fire",
+    "Click / Space — fire",
     "B — cover (2 scrap) · T — pillbox (8) · M — mine (3)",
-    "P — pause · G — next hostile base · Esc — Recall",
-    "Scoreboard: sound · pause / resume · minimize · Recall",
+    "P — pause / resume · G — next hostile base · Esc — Recall (ends the run, restores the page)",
+    "Tab — the scoreboard's keys (sound, pause, minimize, Recall, build, Next gate, Restart, Auto fire); Enter presses one",
     "On mobile: joystick to drive, hold Fire; tap Cover, Pillbox or Mine to build"
   ],
   "facts": [

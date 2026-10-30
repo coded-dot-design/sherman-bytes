@@ -33,6 +33,25 @@ Open the URL Vite prints (normally **http://127.0.0.1:5173**) and start the game
 - Siege waves arrive in squads, with an eight-second build break after you clear each wave. Capturing all bases moves reinforcements to the viewport edges. Zero armor ends the run.
 - Set `mode: "conquest"` for the original capture-all victory condition. Set `fortifications: false` to omit the initial button walls.
 
+### Keys
+
+Everything plays from the keyboard; the mouse is optional.
+
+| Key | Action |
+| --- | --- |
+| W A S D / arrow keys | Drive: turn and move the hull |
+| Space (hold) | Fire. Click fires too |
+| Keyboard aim | Until the mouse moves over the page, the turret follows the hull: turn to aim, Space to fire (`controls: "keyboard"` keeps it that way) |
+| Mouse | Aim the turret at the pointer |
+| B / T / M | Build cover (2 scrap) / a pillbox (8) / a mine (3) ahead of the turret |
+| G | Scroll to the next hostile base |
+| P | Pause / resume |
+| Esc | Recall: end the run and restore the page (also closes the result card) |
+| Tab / Shift+Tab | The scoreboard's keys: sound, pause, minimize, Recall, Cover, Pillbox, Mine, Next gate, Restart, Auto fire |
+| Enter | Press the focused scoreboard key (during a run, Space always fires) |
+
+Focus moves to the scoreboard when a run starts, to Restart when it ends, and back to where it was (the Play key) on Recall. A screen reader hears score, armor, waves, pause and the result through one polite live region, at most once a second.
+
 ## Embed
 
 Registry publication is separate from GitHub releases. Build locally with `npm run build`, then `npm pack` to install the resulting tarball in another app. The standalone ESM entry contains the engine and game; React is an optional separate export.
@@ -65,7 +84,7 @@ Hits replace characters in the existing DOM Text nodes with literal 0 or 1. Ther
 
 Strict TypeScript; one Fizlet engine per run; the rules are one system on typed arrays (`src/world.ts`), so a step never allocates (tested: 20,000 busy steps, no minor GC) and the same seed with the same inputs replays the same run (tested); 32 pooled enemy tanks; 120 pooled shells; 100 runtime particle slots; 24 score popups. The board uses cached glyph geometry and a spatial grid. Tank movement subdivides into <=4 px steps; projectiles use swept collision rays. Up to 32 opted-in hard-cover elements are measured at 4 Hz. Tread sprites are cached and reused. No box shadows or game framework.
 
-`dist/index.js` is **33,601 B gzip** (1.0.1, Fizlet 0.19.0; 1.0.0 was 32,606 B) and budgeted at 34,000 B (`npm run size`, `scripts/size.mjs`, fails the build above that); 0.5.2 on the DOM VIRUS core was 26,994 B. The Board UI kit's CSS (keys, readouts, toast, touch pad: the family's one button language) is 3,230 B of it; the same build without that CSS is 30,312 B. The budget is a checked ceiling, not a promised FPS. The wave clock (`fizlet/rules` waves) caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
+`dist/index.js` is **34,401 B gzip** (Unreleased: +800 B for accessible play; 1.0.1 was 33,601 B on Fizlet 0.19.0; 1.0.0 was 32,606 B) and budgeted at 34,800 B (`npm run size`, `scripts/size.mjs`, fails the build above that); 0.5.2 on the DOM VIRUS core was 26,994 B. The Board UI kit's CSS (keys, readouts, toast, touch pad: the family's one button language) is 3,230 B of it; the same build without that CSS is 30,312 B. The budget is a checked ceiling, not a promised FPS. The wave clock (`fizlet/rules` waves) caps each wave at 40 enemies and active enemies at 32. Player construction is limited to 12 cover segments, four pillboxes and eight mines; button walls are bounded by the 32-base board cap. Construction and wave timing share the existing simulation clock and pause with the game. Three cannon tiers and original scout/heavy enemies remain. This is single-player; networking and base recapture are not implemented.
 
 ## Checks and releases
 

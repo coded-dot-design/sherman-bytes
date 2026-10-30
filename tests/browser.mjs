@@ -105,17 +105,81 @@ try {
   assert.equal(await page.locator("[data-fizlet-host]").count(), 0);
   await page.close();
 
+  where = "keyboard only";
+  // Start, play (drive, the turret follows the hull, fire), the scoreboard's keys, pause, Recall: no
+  // pointer at all. Focus lands on the scoreboard, never gets lost, and goes back to Play.
+  const kb = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await kb.goto(url);
+  const kbBefore = await snapshot(kb);
+  const focused = () => kb.evaluate(() => {
+    let a = document.activeElement;
+    while (a?.shadowRoot?.activeElement) a = a.shadowRoot.activeElement;
+    return a.id || a.dataset.a || a.className;
+  });
+  const region = () => kb.evaluate(() => document.querySelector("[data-fz-announce]")?.textContent ?? null);
+  await kb.keyboard.press("Tab");
+  assert.equal(await focused(), "start");
+  await kb.keyboard.press("Enter");
+  assert.equal((await state(kb)).status, "running");
+  assert.equal(await focused(), "ar", "focus moves to the scoreboard");
+  await kb.keyboard.down("ArrowLeft");
+  await kb.waitForTimeout(400);
+  await kb.keyboard.up("ArrowLeft");
+  s = await state(kb);
+  assert.ok(Math.abs(s.player.turret - s.player.angle) < 1e-9, "keyboard aim: the turret follows the hull");
+  await kb.keyboard.down("Space");
+  await kb.waitForFunction(() => window.game.getSnapshot().score > 0, null, { timeout: 5000 });
+  await kb.keyboard.up("Space");
+  // One polite region, the toast no longer a second one; the score is announced, coalesced.
+  assert.deepEqual(
+    await kb.evaluate(() => {
+      const r = document.querySelector("[data-fz-announce]"), sr = document.querySelector("[data-fizlet-host=sherman-bytes]").shadowRoot;
+      return [r.getAttribute("role"), r.getAttribute("aria-live"), r.getAttribute("aria-atomic"), getComputedStyle(r).display !== "none" && getComputedStyle(r).clipPath, document.querySelectorAll("[role=status],[aria-live]").length + sr.querySelectorAll("[role=status],[aria-live]").length];
+    }),
+    ["status", "polite", "true", "inset(50%)", 1],
+  );
+  await kb.waitForFunction(() => /Score [1-9]/.test(document.querySelector("[data-fz-announce]").textContent));
+  // Tab reaches the scoreboard's keys; Enter on Pause pauses (announced), Enter again resumes.
+  await kb.keyboard.press("Tab");
+  await kb.keyboard.press("Tab");
+  assert.equal(await focused(), "pause");
+  await kb.keyboard.press("Enter");
+  assert.equal((await state(kb)).status, "paused");
+  await kb.waitForFunction(() => /Paused/.test(document.querySelector("[data-fz-announce]").textContent));
+  await kb.keyboard.press("Enter");
+  assert.equal((await state(kb)).status, "running");
+  assert.equal(await focused(), "ar", "a key pressed mid-run hands focus back to the scoreboard");
+  await kb.keyboard.press("Escape");
+  assert.equal((await state(kb)).status, "idle");
+  assert.equal(await focused(), "start", "Recall returns focus to Play");
+  assert.equal(await region(), null, "the region goes with the run");
+  assert.equal(await snapshot(kb), kbBefore);
+  await kb.close();
+
   where = "game over";
   // An undefended tank: the waves come and wear its armor down.
   const over = await browser.newPage({ viewport: { width: 900, height: 700 } });
   await over.goto(url);
   const bare = await snapshot(over);
-  await over.evaluate(() => window.launch({ controls: "keyboard" }));
+  await over.evaluate(() => {
+    // Every announcement, in order.
+    window.said = [];
+    new MutationObserver(() => {
+      const t = document.querySelector("[data-fz-announce]")?.textContent;
+      if (t && t !== window.said.at(-1)) window.said.push(t);
+    }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    window.launch({ controls: "keyboard" });
+  });
   await over.waitForFunction(() => window.game.getSnapshot().status === "gameover", null, { timeout: 150000 });
   s = await state(over);
   assert.equal(s.armor, 0);
   assert.match(await over.locator("[data-fizlet-host=sherman-bytes]").evaluate((h) => h.shadowRoot.textContent), /GAME OVER/);
   assert.equal(await over.locator("[data-fizlet-host=sherman-bytes-art]").count(), 0, "the in-page art is gone with the run");
+  // Announced at once (flushed), and focus is on Restart.
+  const said = await over.evaluate(() => window.said);
+  assert.match(said.at(-1), /Game over\. Final score \d+/);
+  assert.ok(said.some((t) => /Armor \d+%/.test(t)) && said.some((t) => /Wave 1: \d+ tanks incoming/.test(t)), said.join(" | "));
+  assert.equal(await over.evaluate(() => document.activeElement.shadowRoot?.activeElement?.dataset.a), "restart");
   await over.keyboard.press("Escape");
   assert.equal((await state(over)).status, "idle");
   assert.equal(await snapshot(over), bare, "the page is back after the run ends");
@@ -155,7 +219,7 @@ try {
   }
   assert.ok(moved > 40, `the stick drives the tank (${moved.toFixed(0)} px)`);
   await phone.close();
-  console.log("Sherman Bytes browser: bases and walls, hard cover, firing into the page, driving, building, links and fields, pause, Recall restores exactly, frame time, game over (Escape closes it), failed start leaves nothing, phone stick passed.");
+  console.log("Sherman Bytes browser: bases and walls, hard cover, firing into the page, driving, building, links and fields, pause, Recall restores exactly, frame time, keyboard only (focus, keyboard aim, announcements), game over (announced, focus on Restart, Escape closes it), failed start leaves nothing, phone stick passed.");
 } catch (err) {
   console.error(`browser test failed at: ${where}`);
   // On CI, also as an annotation (readable from the checks API without the log).
