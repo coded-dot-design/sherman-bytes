@@ -2,7 +2,7 @@
 
 > **Play it and read about it on DOM Virus:** https://domvirus.com/games/sherman-bytes/ — this README holds the full technical details.
 
-**Every page is a battlefield.** Created by **Chris Cooley / coded.design**. MIT licensed.
+**Every page is a battlefield.** Created by **Chris Cooley / coded.design**. All rights reserved.
 
 An independent, original, single-player DOM tank game inspired by the terrain, base capture and resupply ideas of Stuart Cheshire’s Bolo. Original pixel art; no Bolo code or assets.
 
@@ -80,7 +80,7 @@ CI runs the same checks on every push and tags tested package versions as `vX.Y.
 
 ## Engine
 
-Sherman Bytes runs on [Fizlet](https://github.com/coded-dot-design/fizlet), the micro animation and game engine for the DOM. `src/world.ts` holds the rules; `src/game.ts` is the game's definition on `fizlet/arcade`, the shell shared with Null Invaders and Byte Runner (engine per run, page as the board, scoreboard, keys, touch pad, sound, sparks, popups and the controller). Waves, airdrops and score / XP are `fizlet/rules` bricks. `vendor/fizlet/` is a generated snapshot of Fizlet with its provenance in `vendor/fizlet/ORIGIN.json`; never edit it by hand: change Fizlet, then run `npm run sync` (from a sibling `fizlet` checkout) and rebuild.
+Sherman Bytes runs on [Fizlet](https://github.com/fizlet/fzlt), the micro animation and game engine for the DOM. `src/world.ts` holds the rules; `src/game.ts` is the game's definition on `fizlet/arcade`, the shell shared with Null Invaders and Byte Runner (engine per run, page as the board, scoreboard, keys, touch pad, sound, sparks, popups and the controller). Waves, airdrops and score / XP are `fizlet/rules` bricks. `vendor/fizlet/` is a generated snapshot of Fizlet with its provenance in `vendor/fizlet/ORIGIN.json`; never edit it by hand: change Fizlet, then run `npm run sync` (from a sibling `fizlet` checkout) and rebuild.
 
 ## Inspiration
 

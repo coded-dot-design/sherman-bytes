@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **All rights reserved.** Sherman Bytes moves to the private `fizlet/sherman-bytes` (a transfer) and is no longer open source: `LICENSE` reads "Copyright (c) Chris Cooley. All rights reserved.", `package.json` `license` is `UNLICENSED`, and the build banner says so. Versions up to and including 1.1.0 were released under the MIT license; copies of those keep it. The vendored Fizlet engine stays MIT, its notice in `THIRD_PARTY_NOTICES.md`. Repo links, the clone URL and the vendor provenance point at the `fizlet` org (`fizlet/fzlt` for the engine; `vendor/fizlet` re-synced from the same engine commit, so only `ORIGIN.json`'s note and repository change).
+
 ## 1.1.0
 
 On Fizlet 0.20.0 (was 0.19.0; `vendor/fizlet` from the v0.20.0 release, `bf42a8c`). Same game and rules (`src/world.ts` is unchanged); the scoreboard moves to the Board UI layer's standard, Battlefield Blitz's bar.
