@@ -34,6 +34,6 @@ for (const entry of ["index", "react"])
     legalComments: "none",
     external: ["react"],
     define: { __KIT_CSS__: JSON.stringify(kit) },
-    banner: { js: `/* Sherman Bytes ${version} · MIT © Chris Cooley · built on Fizlet */` },
+    banner: { js: `/* Sherman Bytes ${version} · © Chris Cooley, all rights reserved · built on Fizlet (MIT) */` },
   });
 console.log(`${name}@${version}: ESM + React builds and declarations ready.`);
